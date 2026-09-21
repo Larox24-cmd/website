@@ -1,0 +1,969 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html,body{margin:0}</style></head><body><title>Laksh Sugumar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;700&family=Saira+Semi+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --mask:#0a2a1d; --mask-deep:#05140d; --mask-hi:#14442f;
+  --cu:#c8763a; --cu-hot:#ffb672; --cu-dim:#7a4a2a;
+  --gold:#c9a24a; --silk:#dbe6d3; --silk-dim:#8fa693; --ink:#cdd9cb;
+  --f-disp:"Saira Extra Condensed","Arial Narrow",Impact,sans-serif;
+  --f-head:"Saira Semi Condensed","Arial Narrow",sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--mask-deep);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6}
+body{padding-inline:clamp(16px,4vw,56px);padding-block:20px 48px;min-height:100%;overflow-x:hidden}
+canvas{display:block}
+#pcb,#pulse,.scrim{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none}
+#pcb{z-index:0}#pulse{z-index:1}
+.scrim{z-index:2;background:radial-gradient(ellipse 55% 30% at 30% 20%,rgba(3,12,8,.82),transparent 100%),radial-gradient(ellipse 70% 60% at 50% 45%,rgba(3,12,8,.55),rgba(3,12,8,.1) 80%),linear-gradient(rgba(3,12,8,.7),transparent 12%)}
+#app{position:relative;z-index:3;max-width:1240px;margin-inline:auto}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--cu-hot);outline-offset:3px}
+.mono{font-family:var(--f-mono)}
+.lab{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--silk-dim)}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid rgba(219,230,211,.16)}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--f-head);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:15px;color:var(--silk)}
+.brand small{font-family:var(--f-mono);font-weight:400;font-size:10px;letter-spacing:.14em;color:var(--silk-dim);border:1px solid rgba(219,230,211,.3);padding:1px 5px}
+.top .lab{text-align:right}
+
+/* home */
+.title{padding-top:clamp(18px,3vw,34px)}
+h1{text-shadow:0 2px 18px #03100a;font-family:var(--f-disp);font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:.92;font-size:clamp(46px,9vw,108px);margin:0;color:var(--silk);text-wrap:balance}
+h1 em{font-style:normal;color:var(--cu-hot)}
+.sub{text-shadow:0 1px 10px #03100a;color:#a9bcab;margin-top:12px;max-width:60ch;color:var(--silk-dim)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:clamp(40px,9vw,150px);padding-block:clamp(16px,3vw,36px) 12px}
+.col{display:flex;flex-direction:column;gap:22px}
+.center{display:flex;flex-direction:column;align-items:center;gap:22px;width:280px}
+.socket{position:relative;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,#0a2418 0%,var(--mask-deep) 72%);box-shadow:0 0 0 1px rgba(219,230,211,.35),0 0 0 9px var(--mask-deep),0 0 0 10px rgba(201,162,74,.5),0 0 60px rgba(200,118,58,.16)}
+.socket::before{content:"";position:absolute;inset:-22px;border-radius:50%;border:1px dashed rgba(219,230,211,.28)}
+.socket canvas{position:absolute;inset:0}
+.hint{min-height:64px;text-align:center;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--silk);background:var(--mask-deep);padding:8px 12px;border:1px solid rgba(219,230,211,.18)}
+.hint b{display:block;color:var(--cu-hot);font-weight:500;margin-bottom:2px}
+.hint span::after{content:"_";animation:blink 1s steps(2) infinite;color:var(--cu-hot)}
+@keyframes blink{50%{opacity:0}}
+.opt{position:relative;display:flex;align-items:center;gap:16px;text-align:left;padding:12px 18px 12px 12px;background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(201,162,74,.34);transition:box-shadow .2s,transform .2s;min-width:0}
+.opt::before{content:"";position:absolute;left:5px;top:5px;width:6px;height:6px;border-radius:50%;background:var(--silk-dim);opacity:.7}
+.opt:hover,.opt:focus-visible{box-shadow:inset 0 0 0 1px var(--cu-hot),0 0 26px rgba(255,182,114,.18);transform:translateY(-2px)}
+.opt canvas{flex:none;width:76px;height:76px}
+.opt .ref{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--cu)}
+.opt .nm{display:block;font-family:var(--f-head);font-weight:600;font-size:26px;letter-spacing:.06em;text-transform:uppercase;color:var(--silk);line-height:1.1}
+.opt .ds{display:block;font-size:13px;color:var(--silk-dim);line-height:1.35;margin-top:2px}
+.col.r .opt{flex-direction:row-reverse;text-align:right}
+.col.r .opt::before{left:auto;right:5px}
+
+/* view */
+.nav{display:flex;gap:4px;overflow-x:auto;padding-block:16px 0;scrollbar-width:thin}
+.nav button{display:flex;align-items:center;gap:9px;padding:9px 14px;white-space:nowrap;font-family:var(--f-head);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--silk-dim);background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(219,230,211,.14)}
+.nav button canvas{width:20px;height:20px}
+.nav button:hover{color:var(--silk)}
+.nav button[aria-current="true"]{color:var(--cu-hot);box-shadow:inset 0 0 0 1px rgba(201,162,74,.5),inset 0 -2px 0 var(--cu)}
+.panel{margin-top:14px;background:rgba(4,17,11,.92);box-shadow:0 0 0 1px rgba(201,162,74,.3),0 30px 80px rgba(0,0,0,.5);padding:clamp(20px,4vw,48px);position:relative}
+.panel::before,.panel::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--gold)}
+.panel::before{left:-1px;top:-1px;border-right:0;border-bottom:0}
+.panel::after{right:-1px;bottom:-1px;border-left:0;border-top:0}
+article[hidden]{display:none}
+h2{font-family:var(--f-disp);font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:clamp(40px,6vw,68px);line-height:.95;margin:6px 0 18px;color:var(--silk);text-wrap:balance}
+h3{line-height:1.15;font-family:var(--f-head);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:22px;margin:0 0 6px;color:var(--silk)}
+p{margin:0 0 14px;max-width:64ch}
+.lead{font-size:18px;color:var(--silk);max-width:60ch}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.rule{height:1px;background:rgba(219,230,211,.16);margin-block:26px}
+.spec{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;font-family:var(--f-mono);font-size:13px;margin:0}
+.spec dt{color:var(--silk-dim);letter-spacing:.08em;text-transform:uppercase;font-size:11px;padding-top:2px}
+.spec dd{margin:0;color:var(--silk)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none}
+.chips li{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.04em;padding:3px 8px;color:var(--silk);background:rgba(20,68,47,.55);box-shadow:inset 0 0 0 1px rgba(219,230,211,.2)}
+.chips li.cu{color:var(--cu-hot);background:rgba(200,118,58,.12);box-shadow:inset 0 0 0 1px rgba(200,118,58,.45)}
+.card{background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(201,162,74,.26);padding:20px}
+.card .top2{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:8px}
+.st{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#7fd8a6;white-space:nowrap}
+.st.wip{color:var(--cu-hot)}
+.card p{font-size:14.5px;margin-bottom:8px}
+.tl{position:relative;padding-left:34px;display:flex;flex-direction:column;gap:30px}
+.tl::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:3px;background:linear-gradient(var(--cu),var(--cu-dim));box-shadow:0 0 12px rgba(200,118,58,.4)}
+.tl>div{position:relative}
+.tl>div::before{content:"";position:absolute;left:-34px;top:5px;width:19px;height:19px;border-radius:50%;background:var(--mask-deep);border:3px solid var(--gold);box-shadow:inset 0 0 0 3px #050d09}
+.when{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;color:var(--cu-hot);text-transform:uppercase}
+.ul{margin:8px 0 0;padding-left:18px;max-width:70ch}
+.ul li{margin-bottom:6px;padding-left:2px}
+.ul li::marker{color:var(--cu)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px;margin-block:22px}
+.stat{background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(201,162,74,.3);padding:16px 18px}
+.stat b{display:block;font-family:var(--f-disp);font-size:54px;line-height:1;color:var(--cu-hot);font-weight:700}
+.stat span{font-size:13px;color:var(--silk-dim);line-height:1.4;display:block;margin-top:4px}
+.mail{display:inline-block;font-family:var(--f-disp);font-weight:700;font-size:clamp(28px,6vw,64px);line-height:1;color:var(--cu-hot);text-decoration:none;word-break:break-all;border-bottom:3px solid var(--cu);padding-bottom:4px}
+.mail:hover{color:var(--silk)}
+.btn{margin-left:14px;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;color:var(--silk);box-shadow:inset 0 0 0 1px rgba(219,230,211,.4);vertical-align:middle}
+.btn:hover{color:var(--cu-hot);box-shadow:inset 0 0 0 1px var(--cu-hot)}
+.foot{margin-top:26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+
+.top{position:relative;z-index:10}
+.right{display:flex;align-items:center;gap:18px}
+.views{position:relative}
+#eyeBtn{display:flex;align-items:center;gap:8px;padding:5px 10px;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--silk);background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(219,230,211,.25)}
+#eyeBtn:hover,.views.open #eyeBtn{box-shadow:inset 0 0 0 1px var(--cu-hot)}
+#eyeBtn svg{color:var(--silk-dim)}
+#viewsTip{position:absolute;right:0;top:calc(100% + 10px);width:272px;background:var(--mask-deep);padding:14px 16px;box-shadow:inset 0 0 0 1px rgba(201,162,74,.5),0 18px 50px rgba(0,0,0,.6);opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .18s,transform .18s,visibility .18s}
+.views:hover #viewsTip,.views:focus-within #viewsTip,.views.open #viewsTip{opacity:1;visibility:visible;transform:none}
+#viewsTip .spec{grid-template-columns:1fr auto;gap:8px 14px}
+#viewsTip dd{text-align:right;font-variant-numeric:tabular-nums}
+#viewsTip .lab{display:block;margin-bottom:10px;color:var(--cu-hot)}
+.in{display:inline-flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:13px;letter-spacing:.06em;color:var(--silk);text-decoration:none;padding:10px 14px;box-shadow:inset 0 0 0 1px rgba(219,230,211,.35)}
+.in:hover{color:var(--cu-hot);box-shadow:inset 0 0 0 1px var(--cu-hot)}
+.social{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:30px;padding-top:20px;border-top:1px solid rgba(219,230,211,.16)}
+.social .lab{margin-right:8px}
+.social a{display:grid;place-items:center;width:46px;height:46px;color:var(--silk);background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(201,162,74,.34);transition:color .15s,box-shadow .15s,transform .15s}
+.social a:hover,.social a:focus-visible{color:var(--cu-hot);box-shadow:inset 0 0 0 1px var(--cu-hot),0 0 20px rgba(255,182,114,.2);transform:translateY(-2px)}
+.src{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(219,230,211,.2);display:flex;flex-wrap:wrap;gap:6px 14px}
+.src a{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.03em;color:var(--cu-hot);text-decoration:none;border-bottom:1px solid rgba(255,182,114,.35)}
+.src a:hover{color:var(--silk)}
+.kind{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silk-dim);padding:2px 6px;box-shadow:inset 0 0 0 1px rgba(219,230,211,.22);margin-right:8px;vertical-align:2px}
+.yrs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
+.yr{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;padding:6px 12px;color:var(--silk-dim);background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(219,230,211,.18)}
+.yr[aria-pressed="true"]{color:var(--cu-hot);box-shadow:inset 0 0 0 1px var(--cu),inset 0 -2px 0 var(--cu)}
+.posts{display:flex;flex-direction:column;gap:10px}
+.post{background:var(--mask-deep);box-shadow:inset 0 0 0 1px rgba(201,162,74,.26)}
+.post[open]{box-shadow:inset 0 0 0 1px rgba(255,182,114,.55)}
+.post summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:104px 1fr auto;gap:16px;align-items:baseline;padding:16px 18px}
+.post summary::-webkit-details-marker{display:none}
+.post summary:hover .pt{color:var(--cu-hot)}
+.pd{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--cu-hot)}
+.pt{font-family:var(--f-head);font-weight:600;font-size:21px;letter-spacing:.05em;text-transform:uppercase;color:var(--silk);line-height:1.2}
+.rt{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--silk-dim);white-space:nowrap}
+.pb{padding:0 18px 20px 138px}
+.pb p{font-size:15.5px}
+@media (max-width:900px){
+  .post summary{grid-template-columns:1fr;gap:4px}.pb{padding-left:18px}
+  #colR .opt:last-child{grid-column:1/-1}
+  .stage{grid-template-columns:1fr 1fr;gap:14px;padding-top:10px}
+  .col{display:contents}
+  .center{grid-column:1/-1;width:auto;order:-1;margin-bottom:26px}
+  .opt,.col.r .opt{flex-direction:column;align-items:flex-start;text-align:left;gap:6px;padding:14px}
+  .opt .nm{font-size:22px}
+  .top .lab{display:none}
+}
+@media (max-width:420px){.opt canvas{width:60px;height:60px}.opt .ds{display:none}.btn{margin:14px 0 0 0}}
+@media (prefers-reduced-motion:reduce){.hint span::after{animation:none}.opt{transition:none}}
+</style>
+
+<canvas id="pcb" aria-hidden="true"></canvas>
+<canvas id="pulse" aria-hidden="true"></canvas>
+<div class="scrim"></div>
+
+<div id="app">
+  <header class="top">
+    <button class="brand" id="brand" aria-label="Back to the start">
+      <canvas id="brandOrb" width="20" height="20"></canvas>
+      L. Sugumar <small>REV A</small>
+    </button>
+    <div class="right">
+      <div class="lab">ASU Polytechnic · Robotics B.S.E. · May 2027</div>
+      <div class="views" id="views">
+        <button id="eyeBtn" type="button" aria-describedby="viewsTip" aria-expanded="false" aria-label="Site views">
+          <svg width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><path d="M1 7C3.5 2.8 6.6 1 10 1s6.5 1.8 9 6c-2.5 4.2-5.6 6-9 6S3.5 11.2 1 7Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle id="pupil" cx="10" cy="7" r="3" fill="#ffb672"/></svg>
+          <span id="vTotalBtn">1,400</span>
+        </button>
+        <div id="viewsTip" role="tooltip">
+          <span class="lab">Board telemetry</span>
+          <dl class="spec">
+            <dt>Last renewed</dt><dd id="vRenew">-</dd>
+            <dt>Views today</dt><dd id="vToday">-</dd>
+            <dt>Total views</dt><dd id="vTotal">-</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <section id="home" aria-label="Choose a section">
+    <div class="title">
+      <h1>Lakshanand<br><em>Sugumar</em></h1>
+      <p class="sub">Robotics engineering student writing firmware, drivers and bus protocols on PIC18, STM32 and PSoC &mdash; and taking the boards under them from schematic to bring-up.</p>
+    </div>
+    <div class="stage">
+      <div class="col l" id="colL"></div>
+      <div class="center">
+        <div class="socket" id="socket"><canvas id="bigOrb" role="img" aria-label="Thinking orb"></canvas></div>
+        <div class="hint" id="hint" aria-live="polite"><b>Pick a trace to follow</b><span>six nets · one board</span></div>
+      </div>
+      <div class="col r" id="colR"></div>
+    </div>
+  </section>
+
+  <!-- VIEW -->
+  <section id="view" hidden>
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
+    <div class="panel">
+
+      <article data-view="about">
+        <div class="lab">U1 · About</div>
+        <h2>Who built this board</h2>
+        <p class="lead">Robotics engineering undergraduate at ASU, writing low-level firmware, drivers and communication protocols on PIC18, STM32 and PSoC &mdash; and taking boards from schematic capture through PCB layout to bring-up and design verification.</p>
+        <p>I started on real factory floors in Chennai commissioning robot cells, then moved into embedded systems at ASU, where I now mentor other students through the same courses. I&rsquo;m looking for a hardware engineering internship in embedded systems or firmware.</p>
+        <div class="rule"></div>
+        <dl class="spec">
+          <dt>Degree</dt><dd>B.S.E. Engineering (Robotics), Ira A. Fulton Schools of Engineering, ASU</dd>
+          <dt>Expected</dt><dd>May 2027</dd>
+          <dt>Coursework</dt><dd>Embedded Systems Design (EGR 304, EGR 314), Circuits &amp; Electronics, Digital Signal Processing, Robotic Systems (EGR 456)</dd>
+          <dt>Now</dt><dd>Technology Consultant, ASU Enterprise Technology &middot; Section Leader, Fulton Schools</dd>
+          <dt>Before</dt><dd>Engineering Intern, Master Linque Automation, Chennai (May 2023 &ndash; Jul 2024)</dd>
+          <dt>Based</dt><dd>Mesa, AZ</dd>
+          <dt>Seeking</dt><dd>Hardware engineering internship &mdash; embedded systems / firmware</dd>
+        </dl>
+      </article>
+
+      <article data-view="experience" hidden>
+        <div class="lab">U2 · Experience</div>
+        <h2>Robot cells, students, campus tech</h2>
+        <div class="stats">
+          <div class="stat"><b>7</b><span>robotic cells and workstations commissioned</span></div>
+          <div class="stat"><b>120+</b><span>undergraduates mentored across three embedded courses</span></div>
+          <div class="stat"><b>1,400+</b><span>technical incidents resolved</span></div>
+          <div class="stat"><b>17+</b><span>technology-enabled classrooms commissioned</span></div>
+        </div>
+        <div class="tl">
+          <div>
+            <div class="when">Aug 2025 &ndash; present &middot; Phoenix, AZ</div>
+            <h3>Technology Consultant &middot; ASU Enterprise Technology</h3>
+            <ul class="ul">
+              <li>Maintain enterprise technology infrastructure across 300+ instructional spaces and 9 research laboratories (3 AI, 2 robotics, 4 biotech).</li>
+              <li>Support enterprise networking and embedded sensor infrastructure for robotics perception research, GPU workstations and ML/cloud research environments.</li>
+              <li>Resolved 1,400+ technical incidents through hardware validation, diagnostics and board-level troubleshooting.</li>
+              <li>Specified, deployed and commissioned 17+ technology-enabled classrooms from specification through bring-up.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="when">Aug 2024 &ndash; present &middot; Mesa, AZ</div>
+            <h3>Section Leader &middot; ASU Ira A. Fulton Schools of Engineering</h3>
+            <p class="lab" style="margin-bottom:6px">EGR 304 &middot; EGR 314 &middot; EGR 456</p>
+            <ul class="ul">
+              <li>Mentor 120+ undergraduate engineering students across three embedded systems courses on UART, SPI and I&sup2;C debug, peripheral integration, firmware bring-up and hardware validation.</li>
+              <li>Review student schematic capture and PCB layout in Cadence and KiCad; resolve routing issues and board-level bugs at design reviews.</li>
+              <li>Coach students on surface-mount soldering, wiring and sensor integration; prepare labs and run Fulton freshman embedded systems outreach.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="when">May 2023 &ndash; Jul 2024 &middot; Chennai, India</div>
+            <h3>Engineering Intern &middot; Master Linque Automation</h3>
+            <ul class="ul">
+              <li>Integrated and commissioned 7 robotic cells and workstations built from PLCs, servo drives, steppers and pneumatic actuators; wrote or modified 10 robot motion programs on ABB and FANUC platforms.</li>
+              <li>Programmed the largest cell on site, a 6-axis ABB automated windshield installation station, applying robot kinematics and integrating encoder, IMU and force/torque feedback with PLC/HMI control.</li>
+              <li>Instrumented cells to stream 4 live production KPIs from the PLC/HMI to a centralized monitoring server for real-time visibility.</li>
+              <li>Diagnosed line-stopping faults across wiring, motion control, sensor integration and PLC/HMI, and validated each system before it returned to production.</li>
+            </ul>
+            <p class="lab" style="margin-top:12px">Production line under NDA; KPI values aren&rsquo;t shared.</p>
+          </div>
+        </div>
+      </article>
+
+      <article data-view="projects" hidden>
+        <div class="lab">U3 · Projects</div>
+        <h2>Things I&rsquo;ve wired up</h2>
+        <div class="grid2">
+          <div class="card">
+            <div class="top2"><h3>R6 Recon Amphibot</h3><span class="st">Jan &ndash; May 2026</span></div>
+            <p class="lab" style="margin-bottom:8px">EGR 314 &middot; Sensor &amp; HMI subsystem lead</p>
+            <ul class="ul">
+              <li>Owned the PIC18F57Q83 sensor and HMI subsystem end to end: schematic capture, PCB layout, BOM, surface-mount assembly, firmware, bring-up and design verification.</li>
+              <li>Diagnosed an MSSP peripheral conflict blocking I&sup2;C and resolved it with a bit-banged I&sup2;C driver in C, keeping the BNO055 IMU, SH1106 OLED and HDC2080 sensor working with no board respin.</li>
+              <li>Built and debugged a three-node UART daisy chain at 9600 baud, 8N1, with custom 12-byte ASCII command and telemetry frames, validated on oscilloscope and logic analyzer.</li>
+              <li>Fed subsystem telemetry into the team&rsquo;s MQTT path to cloud infrastructure with a SQL backend.</li>
+              <li>Passed subsystem hardware verification and external design review; wrote the driver API docs and final datasheet report.</li>
+            </ul>
+            <ul class="chips"><li class="cu">PIC18F57Q83</li><li>BNO055</li><li>SH1106</li><li>HDC2080</li><li>UART</li><li>MQTT</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>Vision-Guided 3-Axis Pick-and-Place</h3><span class="st">Jan &ndash; May 2026</span></div>
+            <p class="lab" style="margin-bottom:8px">EGR 456 &middot; PSoC 5LP</p>
+            <ul class="ul">
+              <li>Developed a three-axis robotic manipulator for autonomous pick-and-place with real-time motor control in embedded C.</li>
+              <li>Vision-assisted object localization in OpenCV with closed-loop PID correction for positioning error while grasping.</li>
+              <li>Integrated motor drivers, sensors and embedded control hardware; board-level bring-up, I/O validation and end-to-end system verification.</li>
+              <li><strong>92.5% success (74/80)</strong> in a 350 &times; 200 &times; 150 mm workspace at &plusmn;2.5 mm accuracy, &plusmn;1.0 mm repeatability, 4.8 s per cycle.</li>
+            </ul>
+            <ul class="chips"><li class="cu">PSoC 5LP</li><li>Embedded C</li><li>OpenCV</li><li>PID</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>IR Motion-Sensing Door Actuator</h3><span class="st">Aug &ndash; Dec 2025</span></div>
+            <p class="lab" style="margin-bottom:8px">EGR 304 &middot; PIC18F57Q43</p>
+            <ul class="ul">
+              <li>Took an infrared motion-sensing door actuator from concept to working prototype, owning the design end to end.</li>
+              <li>Designed the infrared sensing front end and signal-conditioning circuit that shapes raw sensor output into a clean, reliable threshold.</li>
+              <li>Produced the schematic, fabricated the PCB, executed hardware bring-up and wrote the control firmware in embedded C.</li>
+              <li>Validated the sensing-to-actuation path and defended the design in an external design review, scoring <strong>100%</strong> on functionality and documentation.</li>
+            </ul>
+            <ul class="chips"><li class="cu">PIC18F57Q43</li><li>IR sensing</li><li>Signal conditioning</li><li>PCB bring-up</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>Self-Configuring Deterministic Control Fabric</h3><span class="st wip">Aug 2024 &ndash; now</span></div>
+            <p>Independent research on a masterless, fault-tolerant bus protocol for deterministic industrial control networks. Full write-up under <em>Research</em>.</p>
+            <ul class="chips"><li class="cu">RS-485</li><li>TDMA</li><li>PIC18F57Q83</li><li>Python</li><li>MPLAB X</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>Array Technologies Capstone</h3><span class="st wip">In progress</span></div>
+            <p>&ldquo;A Row Detection Add-on for Solar PV Trackers.&rdquo; Industry-sponsored senior capstone (EGR 401/402, Team 20). I co-manage the project.</p>
+            <ul class="chips"><li class="cu">Sponsor: Array Technologies</li><li>Solar PV trackers</li><li>Co-PM</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>Dual-Domain Galvanic Handoff Earbuds</h3><span class="st">Paper</span></div>
+            <p>A simulation-only IEEE-style paper on a true-wireless earbud platform with a dual-domain galvanic handoff, with the hardware designed in KiCad.</p>
+            <ul class="chips"><li class="cu">KiCad</li><li>TWS</li><li>Simulation</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>Orange Juice Vending Machine</h3><span class="st wip">Designing</span></div>
+            <p>An automation showcase at ASU, designed to comply with IEC 60335 household-appliance safety.</p>
+            <ul class="chips"><li class="cu">IEC 60335</li><li>Automation</li></ul>
+          </div>
+          <div class="card">
+            <div class="top2"><h3>Zephy</h3><span class="st">9th upgrade</span></div>
+            <p>My personal voice assistant, started as a local assistant on an Ollama/Qwen backend. The ninth upgrade is a Jarvis-style assistant on my own machine that can place calls, schedule meetings and work on projects with me and others.</p>
+            <ul class="chips"><li class="cu">Voice assistant</li><li>Calls</li><li>Scheduling</li><li>Ollama</li><li>Qwen</li></ul>
+          </div>
+        </div>
+      </article>
+
+      <article data-view="research" hidden>
+        <div class="lab">U4 · Research</div>
+        <h2>SDCF: a bus with no master</h2>
+        <p class="lead">Self-Configuring Deterministic Control Fabric &mdash; independent research since August 2024 on a masterless, fault-tolerant bus protocol for deterministic industrial control networks.</p>
+        <p>PIC18F57Q83 nodes on a shared RS-485 bus allocate collision-free TDMA slots among themselves and absorb peer failures with no coordinator node.</p>
+        <div class="stats">
+          <div class="stat"><b>63</b><span>nodes converge within 88 frames, worst case</span></div>
+          <div class="stat"><b>3</b><span>frames for peer takeover, against an analytical bound of 4</span></div>
+          <div class="stat"><b>7,200</b><span>words in the technical manuscript, in preparation</span></div>
+        </div>
+        <p>Characterized in a Python simulator, then ported to JavaScript with a browser visualizer for schedule inspection. A reference firmware implementation is underway in MPLAB X, and I measured fault-recovery bounds against the analytical model.</p>
+        <ul class="chips"><li class="cu">RS-485</li><li>TDMA</li><li>Deterministic scheduling</li><li>PIC18F57Q83</li><li>Python</li><li>JavaScript</li><li>MPLAB X</li></ul>
+      </article>
+
+      <article data-view="skills" hidden>
+        <div class="lab">U5 · Skills</div>
+        <h2>Component bin</h2>
+        <div class="grid2">
+          <div class="card"><h3>Languages</h3><ul class="chips"><li class="cu">C</li><li class="cu">Embedded C</li><li>C++</li><li>Python</li><li>PIC18 Assembly</li><li>MATLAB</li><li>SQL</li><li>Bash</li></ul></div>
+          <div class="card"><h3>Embedded</h3><p>Bare-metal register-level programming on PIC18F57Q83/Q43, STM32 and Arduino; interrupt-driven design; peripheral drivers and HALs; embedded debugging.</p><ul class="chips"><li class="cu">Hardware and board bring-up</li><li class="cu">Firmware validation and verification</li></ul></div>
+          <div class="card"><h3>Protocols</h3><ul class="chips"><li class="cu">UART</li><li class="cu">SPI</li><li class="cu">I&sup2;C</li><li class="cu">RS-485</li><li>CAN</li><li>USB (basic)</li><li>Ethernet</li><li>TCP/IP</li><li>MQTT</li></ul></div>
+          <div class="card"><h3>Hardware</h3><p>Schematic capture, PCB design, layout, fabrication and bring-up; digital and analog circuit analysis; signal integrity and conditioning; digital logic; SMT soldering and rework.</p><ul class="chips"><li class="cu">Board-level debugging</li><li class="cu">Hardware validation and verification</li></ul></div>
+          <div class="card"><h3>Test equipment</h3><ul class="chips"><li class="cu">Oscilloscope</li><li class="cu">Logic analyzer</li><li>Function generator</li><li>Digital multimeter</li><li>Bench power supply</li></ul></div>
+          <div class="card"><h3>Tools</h3><ul class="chips"><li class="cu">MPLAB X</li><li>PSoC Creator</li><li class="cu">Cadence Allegro X</li><li>Cadence PCB Designer</li><li class="cu">KiCad</li><li>SolidWorks</li><li>Siemens NX</li><li>Git/GitHub</li><li>Linux</li><li>macOS</li></ul></div>
+          <div class="card"><h3>Robots &amp; industrial control</h3><ul class="chips"><li class="cu">ABB</li><li class="cu">FANUC</li><li>ROS 2</li><li>OpenCV</li><li>Allen-Bradley</li><li>Siemens PLC</li><li>Ladder / ST / FBD</li><li>ANSI/RIA 15.06</li></ul></div>
+        </div>
+        <div class="rule"></div>
+        <h3>Certifications</h3>
+        <ul class="chips">
+          <li class="cu">Cadence: Allegro X Advanced Package Designer v24.1</li><li class="cu">MathWorks: Computer Vision Engineer</li><li class="cu">University of Toronto: Self-Driving Cars Specialization</li><li class="cu">Packt: Mastering ROS 2</li>
+          <li>Autodesk: Electronics Design</li><li>Autodesk: Assembly Modeling</li><li>Autodesk Certified Professional: AutoCAD</li>
+        </ul>
+      </article>
+
+      <article data-view="blog" hidden>
+        <div class="lab">U6 · Blog</div>
+        <h2>Global robotics desk</h2>
+        <p class="lead">What I&rsquo;m reading about robotics in different countries, and how I&rsquo;d think about it as an embedded engineer. News items cite their sources; the opinions are mine.</p>
+        <div class="yrs" id="yrs" role="group" aria-label="Filter by year"></div>
+        <div class="posts" id="posts"></div>
+      </article>
+
+      <article data-view="contact" hidden>
+        <div class="lab">J1 · Contact</div>
+        <h2>The connector is open</h2>
+        <p class="lead">I&rsquo;m looking for a hardware engineering internship in embedded systems or firmware, and I graduate in May 2027. Send a signal.</p>
+        <p style="margin-top:26px"><a class="mail" id="mail" href="mailto:lakshanandsugumar@gmail.com">lakshanandsugumar@gmail.com</a><button class="btn" id="copy" type="button">Copy</button></p>
+        <p class="lab" style="margin-top:8px">Also: <a href="mailto:lsugumar@asu.edu" style="color:var(--silk)">lsugumar@asu.edu</a></p>
+        <p style="margin-top:22px"><a class="in" id="linkedin" href="https://www.linkedin.com/in/lakshanand-sugumar" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2ZM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2ZM7.1 20.5H3.6V9h3.5v11.5Z"/></svg>LinkedIn &middot; /in/lakshanand-sugumar</a></p>
+        <div class="rule"></div>
+        <p class="lab">Mesa, AZ &middot; Chennai, India</p>
+      </article>
+
+    </div>
+    <div class="foot lab"><span>LSK-RBT-01 · Rev A</span><span>Orbs: Jakubantalik/thinking-orbs (MIT)</span></div>
+  </section>
+  <footer class="social" aria-label="Social links">
+    <span class="lab">Find me</span>
+    <a href="https://www.instagram.com/lakshanandsugumar/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></svg></a>
+    <a href="https://www.linkedin.com/in/lakshanand-sugumar" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2ZM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2ZM7.1 20.5H3.6V9h3.5v11.5Z"/></svg></a>
+    <a href="mailto:lakshanandsugumar@gmail.com" aria-label="Email"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m3.5 7 8.5 6.5L20.5 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></a>
+  </footer>
+</div>
+
+<script>
+"use strict";var TO=(()=>{var Z=Object.defineProperty;var wt=Object.getOwnPropertyDescriptor;var Rt=Object.getOwnPropertyNames;var Pt=Object.prototype.hasOwnProperty;var vt=(n,o)=>{for(var t in o)Z(n,t,{get:o[t],enumerable:!0})},Ot=(n,o,t,a)=>{if(o&&typeof o=="object"||typeof o=="function")for(let s of Rt(o))!Pt.call(n,s)&&s!==t&&Z(n,s,{get:()=>o[s],enumerable:!(a=wt(o,s))||a.enumerable});return n};var St=n=>Ot(Z({},"__esModule",{value:!0}),n);var Wt={};vt(Wt,{BASE_PROFILES:()=>Y,MODE_FRAMES:()=>W,STATE_TO_MODE:()=>G,resolvePreset:()=>st});function K(n,o,t){return n+(o-n)*t}function $(n){return n-Math.floor(n)}function q(n,o){let t=Math.floor(n),a=Math.floor(o),s=n-t,e=o-a;s=s*s*(3-2*s),e=e*e*(3-2*e);let r=E(t,a),p=E(t+1,a),h=E(t,a+1),g=E(t+1,a+1);return r+(p-r)*s+(h-r)*e+(r-p-h+g)*s*e}function E(n,o){let t=Math.sin(n*12.9898+o*78.233)*43758.5453;return t-Math.floor(t)}function j(n,o){let t=Math.PI*(3-Math.sqrt(5)),a=1-2*(n+.5)/o,s=Math.sqrt(1-a*a),e=n*t;return[s*Math.cos(e),a,s*Math.sin(e)]}function at(n,o){return Math.atan2(Math.sin(n-o),Math.cos(n-o))}function N(n,o,t,a,s){let e=Math.sin(o),r=Math.cos(o),p=Math.sin(n),h=Math.cos(n);return(g,P,M)=>{let c=g*h+M*p,m=-g*p+M*h,R=P*r-m*e,D=P*e+m*r;return[t+c*s,a-R*s,D]}}function zt(n,o,t,a=.3){for(let s of o){let e=s.a??1,r=Math.min(1,Math.max(0,s.white)),p=Math.round((t?1-r:r)*255);n.fillStyle=`rgba(${p},${p},${p},${e})`,n.beginPath(),n.arc(s.x,s.y,s.r,0,Math.PI*2),n.fill()}}function Ft(n,o,t){for(let a of o){let s=a.a??1,e=Math.min(1,Math.max(0,a.white)),r=Math.round((t?1-e:e)*255);n.strokeStyle=`rgba(${r},${r},${r},${s})`,n.lineWidth=a.w,n.beginPath(),n.moveTo(a.x1,a.y1),n.lineTo(a.x2,a.y2),n.stroke()}}function I(n,o,t=.3){let a=[];for(let s of n)(s.a??1)<.02||(s.r=Math.max(t,s.r),a.push(s));return a.sort((s,e)=>s.z-e.z),{dots:a,lines:o.filter(s=>(s.a??1)>=.02)}}function ct(n,o,t){o.lines.length&&Ft(n,o.lines,t),zt(n,o.dots,t)}function L(n,o){return(n/300)**o}var it=(n,o,t)=>{let a=n/2,s=n/2,e=n/2*.76,r=N(o*.4,.3,a,s,1),p=L(n,t.rsPow??.6),h=[],g=t.ghostN??150;for(let c=0;c<g;c++){let m=j(c,g),[R,D,i]=r(m[0]*e,m[1]*e,m[2]*e),u=(i/e+1)/2;h.push({x:R,y:D,z:i,r:.8*p,white:.78,a:.1+.22*u})}let P=t.strandN??52,M=t.turns??3;for(let c=0;c<3;c++){let m=c/3*2*Math.PI;for(let R=0;R<P;R++){let D=($(R/P+o*.045)*2-1)*.96,i=Math.sqrt(Math.max(0,1-D*D)),u=Math.min(1,(1-Math.abs(D))/.1),x=D*Math.PI*M+m,b=1+.075*Math.sin(D*Math.PI*M*2+m*2+o*.8),l=i*e*b,[w,f,y]=r(Math.cos(x)*l,D*e*b,Math.sin(x)*l),d=(y/e+1)/2;h.push({x:w,y:f,z:y,r:((t.rBase??1.2)+(t.rDepth??1.8)*d)*p,white:.55-.45*d,a:u*(.45+.55*d)})}}return I(h,[],t.rMin)};function kt(n,o,t,a){let s=2*o*t+a,e=n%s,r=new Array(o).fill(0),p=-1;if(e<2*o*t){let h=Math.floor(e/t),g=(e-h*t)/t,M=1-(1-Math.min(1,g/.7))**3;if(h<o){for(let c=0;c<h;c++)r[c]=1;r[h]=M,p=h}else{let c=2*o-1-h;for(let m=0;m<c;m++)r[m]=1;r[c]=1-M,p=c}}return{amount:r,active:p}}function Et(n,o,t){let[a,s,e]=n,r=!1;for(let p=0;p<o.length;p++){if(t.amount[p]<=0)continue;let h=o[p],g=h.axis===0?a:h.axis===1?s:e;if(g<h.lo||g>=h.hi)continue;p===t.active&&(r=!0);let P=h.ang*t.amount[p],M=Math.cos(P),c=Math.sin(P);if(h.axis===0){let m=s*M-e*c;e=s*c+e*M,s=m}else if(h.axis===1){let m=a*M+e*c;e=-a*c+e*M,a=m}else{let m=a*M-s*c;s=a*c+s*M,a=m}}return[a,s,e,r]}function It(n){let o=[];for(let t=0;t<n;t++){let a=Math.min(2,Math.floor(E(t,2.3)*3)),s=-1+.5*Math.min(3,Math.floor(E(t,5.9)*4)),e=E(t,7.7)<.5?1:-1;o.push({axis:a,lo:s,hi:s+.5,ang:e*Math.PI/2})}return o}var ht=(n,o,t)=>{let s=n/2,e=n/2,r=n/2*.82,p=.4+.06*Math.sin(o*.35),h=N(o*.5,p,s,e,r),g=o*(.5+(1.7-.5)*(t.scanMul??1)),P=L(n,t.rsPow??.6),M=t.dimBase??1,c=[],m=t.latRings??17,R=t.lonDensity??44;for(let D=0;D<=m;D++){let i=-Math.PI/2+D/m*Math.PI,u=Math.cos(i),x=Math.sin(i),b=Math.max(1,Math.round(Math.abs(u)*R));for(let l=0;l<b;l++){let w=l/b*2*Math.PI,[f,y,d]=h(u*Math.cos(w),x,u*Math.sin(w)),v=(d+1)/2,F=at(w+o*.5,g),S=Math.exp(-(F*F)/.18)*Math.max(0,d);c.push({x:f,y,z:d,r:((t.rBase??.6)+(t.rDepth??1.7)*v+(t.rBoost??1)*S)*P,white:(t.inkFar??.62)-(t.inkSpan??.54)*v,a:M+(1-M)*Math.min(1,S)})}}return I(c,[],t.rMin)},pt=(n,o,t)=>{let a=n/2,s=n/2,e=n/2*.82,r=N(o*.55,.35+.1*Math.sin(o*.9),a,s,e),p=L(n,t.rsPow??.6),h=t.moveCount??14,g=It(h),P=kt(o,h,.42,1.2),M=[],c=t.latRings??15,m=t.lonDensity??40;for(let R=0;R<=c;R++){let D=-Math.PI/2+R/c*Math.PI,i=Math.cos(D),u=Math.sin(D),x=Math.max(1,Math.round(Math.abs(i)*m));for(let b=0;b<x;b++){let l=b/x*2*Math.PI,[w,f,y,d]=Et([i*Math.cos(l),u,i*Math.sin(l)],g,P),[v,F,S]=r(w,f,y),O=(S+1)/2;M.push({x:v,y:F,z:S,r:((t.rBase??.6)+(t.rDepth??1.7)*O+(d?t.rActive??.3:0))*p,white:(t.inkFar??.62)-(t.inkSpan??.54)*O-(d?.14:0)})}}return I(M,[],t.rMin)},mt=(n,o,t)=>{let a=n/2,s=n/2,e=n/2*.874,r=N(o*.18,.38,a,s,1),p=L(n,t.rsPow??.6),h=[],g=t.rings??15,P=t.lonDensity??40;for(let M=0;M<=g;M++){let c=-Math.PI/2+M/g*Math.PI,m=Math.cos(c),R=Math.sin(c),D=.62*Math.sin(o*2.1-M*.52)+.38*Math.sin(o*1.27+M*.83),i=e*(.88+.105*D),u=Math.max(1,Math.round(Math.abs(m)*P));for(let x=0;x<u;x++){let b=x/u*2*Math.PI,[l,w,f]=r(m*Math.cos(b)*i,R*i,m*Math.sin(b)*i),y=(f/e+1)/2,d=Math.max(0,D);h.push({x:l,y:w,z:f,r:((t.rBase??.6)+(t.rDepth??1.7)*y)*(1+.4*d)*p,white:.66-.56*y-.1*d})}}return I(h,[],t.rMin)};function At(n){return n*n*(3-2*n)}function Mt(n){let o=n.length,t=[],a=0;for(let s=0;s<o;s++){let e=n[s],r=n[(s+1)%o],p=Math.hypot(r[0]-e[0],r[1]-e[1]);t.push(p),a+=p}return s=>{let e=s*a,r=0;for(;e>t[r]&&r<o-1;)e-=t[r],r++;let p=n[r],h=n[(r+1)%o],g=t[r]?Math.min(1,e/t[r]):0;return[p[0]+(h[0]-p[0])*g,p[1]+(h[1]-p[1])*g]}}var Nt=n=>{let o=-Math.PI/2+n*2*Math.PI;return[Math.cos(o)*.24,Math.sin(o)*.24]},Lt=Mt([[0,-.26],[.24,.16],[-.24,.16]]),Bt=Mt([[0,-.2],[.2,-.2],[.2,.2],[-.2,.2],[-.2,-.2]]),tt=[Nt,Lt,Bt];function Ct(n){return Math.max(6,Math.round(34*n))}var ot=1.4,ut=.9,nt=ot+ut,lt=(n,o,t)=>{let a=tt.length,s=o%(nt*a),e=Math.floor(s/nt),r=s-e*nt,p=r>ot?At((r-ot)/ut):0,h=t.spread??1,g=tt[e],P=tt[(e+1)%a],M=160,c=[];for(let f=0;f<M;f++){let y=f/M,d=g(y),v=P(y);c.push([(d[0]+(v[0]-d[0])*p)*h,(d[1]+(v[1]-d[1])*p)*h])}let m=[],R=0;for(let f=0;f<M;f++){let y=c[f],d=c[(f+1)%M],v=Math.hypot(d[0]-y[0],d[1]-y[1]);m.push(v),R+=v}let D=Ct(t.iconD??1),i=(t.rDot??.021)*1.35*h,u=1+.02*Math.sin(r*3.1),x=[],b=n/2,l=0,w=0;for(let f=0;f<D;f++){let y=f/D*R;for(;w+m[l]<y&&l<M-1;)w+=m[l],l++;let d=c[l],v=c[(l+1)%M],F=m[l]?Math.min(1,(y-w)/m[l]):0,S=(d[0]+(v[0]-d[0])*F)*u,O=(d[1]+(v[1]-d[1])*F)*u;x.push({x:b+S*n,y:b+O*n,z:0,r:Math.max(.35,i*n),white:.1})}return I(x,[],t.rMin)};var dt=(n,o,t)=>{let a=n/2,s=n/2,e=n/2*.82,r=N(o*.12,.3,a,s,1),p=L(n,t.rsPow??.6),h=[],g=t.orbitN??12,P=t.ghostN??40,M=t.particles??3;for(let c=0;c<g;c++){let m=E(c,1.7),R=E(c,5.2),D=E(c,8.9),i=e*(.45+.52*m),u=m*2*Math.PI,x=Math.acos(2*R-1),b=Math.sin(x)*Math.cos(u),l=Math.cos(x),w=Math.sin(x)*Math.sin(u),f=-l,y=b,d=0,v=Math.max(1e-6,Math.sqrt(f*f+y*y));f/=v,y/=v;let F=l*d-w*y,S=w*f-b*d,O=b*y-l*f,B=(.25+.55*D)*(D>.5?1:-1);for(let A=0;A<P;A++){let z=A/P*2*Math.PI,[k,C,T]=r((f*Math.cos(z)+F*Math.sin(z))*i,(y*Math.cos(z)+S*Math.sin(z))*i,(d*Math.cos(z)+O*Math.sin(z))*i),_=(T/i+1)/2;h.push({x:k,y:C,z:T,r:(t.ghostR??.9)*p,white:.72,a:(t.ghostA??.5)*(.4+.6*_)})}for(let A=0;A<M;A++){let z=o*B+A/M*2*Math.PI+R*6,[k,C,T]=r((f*Math.cos(z)+F*Math.sin(z))*i,(y*Math.cos(z)+S*Math.sin(z))*i,(d*Math.cos(z)+O*Math.sin(z))*i),_=(T/i+1)/2;h.push({x:k,y:C,z:T,r:((t.partR??1.2)+(t.partRDepth??1.6)*_)*p,white:.3-.22*_})}}return I(h,[],t.rMin)};var et=(n,o,t)=>{let a=n/2,s=n/2,e=n/2*.78,r=t.spin??1,p=.3,h=N(o*.1*r,p,a,s,1),g=L(n,t.rsPow??.6),P=[],M=t.ghostN??150;for(let O=0;O<M;O++){let B=j(O,M),[A,z,k]=h(B[0]*e,B[1]*e,B[2]*e),C=(k/e+1)/2;P.push({x:A,y:z,z:k,r:.8*g,white:.78,a:.1+.22*C})}let c=o*.24*r,m=t.faceOn?-p:.55+.3*Math.sin(o*.18)*r,R=Math.cos(c),D=0,i=Math.sin(c),u=-i*Math.sin(m),x=Math.cos(m),b=R*Math.sin(m),l=D*b-i*x,w=i*u-R*b,f=R*x-D*u,y=.23*(t.wobMul??1),d=t.faceOn?e/(1+.85*y):e,v=t.lanes??5,F=t.segs??88,S=Math.max(1,Math.round(v*(t.bandMul??1)));for(let O=0;O<S;O++){let B=(O-(S-1)/2)*.075,A=Math.abs(O-(S-1)/2)/Math.max(1,(S-1)/2);for(let z=0;z<F;z++){let k=z/F*2*Math.PI,C=(.16*Math.sin(k*3-o*1.7+O*.22)+.07*Math.sin(k*5+o*1.1))*(t.wobMul??1),T=t.faceOn?1+C:1,_=t.faceOn?B:B+C,U=R*Math.cos(k)+u*Math.sin(k)+l*_,H=D*Math.cos(k)+x*Math.sin(k)+w*_,Q=i*Math.cos(k)+b*Math.sin(k)+f*_,V=Math.sqrt(U*U+H*H+Q*Q),J=d*T,[gt,Dt,rt]=h(U/V*J,H/V*J,Q/V*J),X=(rt/e+1)/2;P.push({x:gt,y:Dt,z:rt,r:((t.rBase??1.1)+(t.rDepth??1.7)*X)*(1-.25*A)*g,white:.52-.44*X+.18*A,a:.4+.6*X})}}return I(P,[],t.rMin)};var bt=(n,o,t)=>{let a=n/2,s=n/2,e=n/2*.8*(t.spread??1),r=N(o*.12,.32,a,s,e),p=L(n,t.rsPow??.6),h=t.nodeN??30,g=t.thr??.72,P=t.nodeR??1.4,M=t.nodeRDepth??1.8,c=[];for(let i=0;i<h;i++){let u=j(i,h),x=u[0]+.3*(q(i*.31+9,o*.24)-.5)*2,b=u[1]+.3*(q(i*.53+27,o*.21)-.5)*2,l=u[2]+.3*(q(i*.77+55,o*.27)-.5)*2,w=Math.sqrt(x*x+b*b+l*l);c.push([x/w,b/w,l/w])}let m=[],R=[];for(let i=0;i<h;i++)for(let u=i+1;u<h;u++){let x=c[i][0]-c[u][0],b=c[i][1]-c[u][1],l=c[i][2]-c[u][2],w=Math.sqrt(x*x+b*b+l*l);if(w>=g)continue;let[f,y,d]=r(c[i][0],c[i][1],c[i][2]),[v,F,S]=r(c[u][0],c[u][1],c[u][2]),O=((d+S)/2+1)/2;m.push({x1:f,y1:y,x2:v,y2:F,white:.42,a:(1-w/g)*(.3+.55*O),w:Math.max(.6,(t.lineW??.8)*p)})}for(let i=0;i<h;i++){let[u,x,b]=r(c[i][0],c[i][1],c[i][2]),l=(b+1)/2,w=1+.25*Math.sin(o*1.4+i*2.7);R.push({x:u,y:x,z:b,r:(P+M*l)*w*p,white:.55-.45*l})}let D=t.signals??5;for(let i=0;i<D;i++){let u=Math.floor(o*.55+i*7.31),x=Math.floor(E(u,i*3.1+1.7)*h),b=Math.floor(E(u,i*5.7+4.2)*h);if(x===b)continue;let l=$(o*.55+i*7.31),w=K(c[x][0],c[b][0],l),f=K(c[x][1],c[b][1],l),y=K(c[x][2],c[b][2],l),d=Math.max(1e-6,Math.sqrt(w*w+f*f+y*y)),[v,F,S]=r(w/d,f/d,y/d),O=(S+1)/2;R.push({x:v,y:F,z:S,r:(P*1.5+M*O)*p,white:.05,a:.5+.5*O})}return I(R,m,t.rMin)};var W={orbits:dt,globe:ht,rubik:pt,wave:mt,web:bt,braid:it,ribbon:et,ring:et,morph:lt},_t=Object.fromEntries(Object.entries(W).map(([n,o])=>[n,((t,a,s,e,r)=>ct(t,o(a,s,r),e))]));var Tt=[["latRings","lonDensity"],["rings","lonDensity"],["lanes","segs"]],jt=["orbitN","ghostN","nodeN","strandN","signals"],Kt=["iconD"],$t=["rBase","rDepth","rActive","rDot","ghostR","partR","partRDepth","nodeR","nodeRDepth"];function ft(n,o){let t={...n},a=new Set,s=Math.sqrt(o);for(let[e,r]of Tt){let p=t[e],h=t[r];p!=null&&h!=null&&!a.has(e)&&!a.has(r)&&(t[e]=Math.max(2,Math.round(p*s)),t[r]=Math.max(2,Math.round(h*s)),a.add(e),a.add(r))}for(let e of jt){let r=t[e];r!=null&&r!==0&&!a.has(e)&&(t[e]=Math.max(1,Math.round(r*o)))}for(let e of Kt){let r=t[e];r!=null&&(t[e]=Math.max(.02,r*o))}return t}function xt(n,o){let t={...n};for(let a of $t){let s=t[a];s!=null&&(t[a]=s*o)}return t.rSizeMul=(t.rSizeMul??1)*o,t}var Y={globe:{latRings:17,lonDensity:44,rBase:.6,rDepth:1.7,rBoost:1,inkFar:.62,inkSpan:.54,rsPow:.6,rMin:.3},orbits:{orbitN:12,ghostN:40,ghostR:.9,ghostA:.5,particles:3,partR:1.2,partRDepth:1.6,rsPow:.6,rMin:.3},rubik:{latRings:15,lonDensity:40,moveCount:14,rBase:.6,rDepth:1.7,rActive:.3,inkFar:.62,inkSpan:.54,rsPow:.6,rMin:.3},wave:{rings:15,lonDensity:40,rBase:.6,rDepth:1.7,rsPow:.6,rMin:.3},web:{nodeN:30,thr:.72,signals:5,nodeR:1.4,nodeRDepth:1.8,lineW:.8,rsPow:.6,rMin:.3},braid:{strandN:52,turns:3,ghostN:150,rBase:1.2,rDepth:1.8,rsPow:.6,rMin:.3},ribbon:{lanes:5,segs:88,ghostN:150,rBase:1.1,rDepth:1.7,rsPow:.6,rMin:.3},ring:{lanes:5,segs:88,ghostN:0,faceOn:1,rBase:1.1,rDepth:1.7,rsPow:.6,rMin:.3},morph:{rDot:.021,iconD:1,rMin:.25}};var G={working:"orbits",searching:"globe",solving:"rubik",listening:"wave",connecting:"web",weaving:"braid",composing:"ribbon",breathing:"ring",shaping:"morph"},qt={orbits:{64:{speed:1.885,count:1,size:1},20:{speed:3.9,count:.238,size:2.4}},globe:{64:{speed:2.015,count:.42,size:1.15,extra:{scanMul:4.08,dimBase:.45}},20:{speed:2.665,count:.105,size:1.75,extra:{scanMul:4.335,dimBase:.45}}},rubik:{64:{speed:1.82,count:.35,size:1.05},20:{speed:1.95,count:.088,size:1.9}},wave:{64:{speed:4.388,count:.341,size:1},20:{speed:3.998,count:.105,size:1.6}},web:{64:{speed:3.315,count:1.35,size:.95},20:{speed:6.63,count:.25,size:1.52}},braid:{64:{speed:1.625,count:.5,size:1},20:{speed:2.75,count:.1125,size:1.36}},ribbon:{64:{speed:2.34,count:.25,size:.85,extra:{spin:0,bandMul:3.9,wobMul:1}},20:{speed:3.12,count:.051,size:1.073,extra:{spin:0,bandMul:4.94,wobMul:1}}},ring:{64:{speed:3.24,count:.25,size:.956,extra:{spin:0,bandMul:3.627,wobMul:.368}},20:{speed:3.78,count:.028,size:1.622,extra:{spin:0,bandMul:3.968,wobMul:.565}}},morph:{64:{speed:2.405,count:.702,size:.395,extra:{spread:1.45}},20:{speed:2.08,count:.53,size:1.011,extra:{spread:1.45}}}},yt=new Map;function st(n,o){let t=`${n}-${o}`,a=yt.get(t);if(a)return a;let s=G[n],e=qt[s][o],r={...Y[s]};e.count!==1&&(r=ft(r,e.count)),e.size!==1&&(r=xt(r,e.size)),e.extra&&(r={...r,...e.extra});let p={mode:s,speed:e.speed,opts:r};return yt.set(t,p),p}return St(Wt);})();
+
+</script>
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+var DPR=Math.min(2,window.devicePixelRatio||1);
+var clamp=function(v,a,b){return Math.max(a,Math.min(b,v))};
+
+/* ---------- content model ---------- */
+var OPTS=[
+ {id:"about",ref:"U1",nm:"About",ds:"Who built this board",state:"breathing",side:"l"},
+ {id:"experience",ref:"U2",nm:"Experience",ds:"Robot cells, PLCs, consulting",state:"working",side:"l"},
+ {id:"projects",ref:"U3",nm:"Projects",ds:"Amphibot, capstone, balancer",state:"solving",side:"l"},
+ {id:"research",ref:"U4",nm:"Research",ds:"SDCF: a bus with no master",state:"connecting",side:"r"},
+ {id:"skills",ref:"U5",nm:"Skills",ds:"Toolchain and certifications",state:"weaving",side:"r"},
+ {id:"blog",ref:"U6",nm:"Blog",ds:"Global robotics desk",state:"shaping",side:"r"},
+ {id:"contact",ref:"J1",nm:"Contact",ds:"Open the connector",state:"listening",side:"r"}
+];
+
+/* ---------- orbs (geometry from thinking-orbs engine, copper-tinted painter) ---------- */
+var orbs=[];
+function ink(g,a){
+  var r=Math.round(58+197*g),gr=Math.round(28+160*Math.pow(g,1.15)),b=Math.round(12+104*g*g);
+  return "rgba("+r+","+gr+","+b+","+a+")";
+}
+function resolve(o){
+  o.mode=TO.STATE_TO_MODE[o.state];
+  if(o.big){o.opts=TO.BASE_PROFILES[o.mode];o.speed=1.5*(o.speedMul||1)}
+  else{var r=TO.resolvePreset(o.state,o.preset);o.opts=r.opts;o.speed=r.speed}
+}
+function makeOrb(canvas,state,size,o2){
+  var o={canvas:canvas,ctx:canvas.getContext("2d"),state:state,size:size,t:Math.random()*10,boost:1,boostT:1,big:false,preset:64,follow:false,look:{yaw:0,tilt:0,px:0,py:0}};
+  for(var k in o2)o[k]=o2[k];
+  canvas.width=Math.round(size*DPR);canvas.height=Math.round(size*DPR);
+  canvas.style.width=size+"px";canvas.style.height=size+"px";
+  resolve(o);orbs.push(o);drawOrb(o,0.6);return o;
+}
+function setState(o,state){o.state=state;resolve(o);if(reduce)drawOrb(o,0)}
+/* rigid re-rotation of the projected sphere so its front face turns toward the cursor */
+function rotFrame(f,o){
+  var R=o.size*0.4,cx=o.size/2,cy=o.size/2,ca=Math.cos(o.look.yaw),sa=Math.sin(o.look.yaw),cb=Math.cos(o.look.tilt),sb=Math.sin(o.look.tilt),i,d,x,y,z,x1,z1,y2,z2;
+  for(i=0;i<f.dots.length;i++){d=f.dots[i];x=d.x-cx;y=d.y-cy;z=d.z*R;
+    x1=x*ca+z*sa;z1=-x*sa+z*ca;y2=y*cb+z1*sb;z2=-y*sb+z1*cb;
+    var dz=(z2-z)/R;d.x=cx+x1;d.y=cy+y2;d.z=z2/R;d.r*=Math.max(.4,1+0.3*dz);d.white=clamp(d.white-0.3*dz,0,1)}
+  f.dots.sort(function(a,b){return a.z-b.z});
+}
+var mouse={x:0,y:0,has:false};
+addEventListener("pointermove",function(e){mouse.x=e.clientX;mouse.y=e.clientY;mouse.has=true},{passive:true});
+document.addEventListener("pointerleave",function(){mouse.has=false});
+function drawOrb(o,dt){
+  o.boost+=(o.boostT-o.boost)*0.12;
+  o.t+=dt*o.speed*o.boost;
+  var c=o.ctx,f=TO.MODE_FRAMES[o.mode](o.size,o.t,o.opts),i,d,l;
+  if(o.follow&&(Math.abs(o.look.yaw)>.002||Math.abs(o.look.tilt)>.002))rotFrame(f,o);
+  c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,o.size,o.size);
+  for(i=0;i<f.lines.length;i++){l=f.lines[i];
+    c.strokeStyle=ink(1-clamp(l.white,0,1),l.a==null?1:l.a);c.lineWidth=l.w;
+    c.beginPath();c.moveTo(l.x1,l.y1);c.lineTo(l.x2,l.y2);c.stroke()}
+  for(i=0;i<f.dots.length;i++){d=f.dots[i];
+    c.fillStyle=ink(1-clamp(d.white,0,1),d.a==null?1:d.a);
+    c.beginPath();c.arc(d.x,d.y,d.r,0,6.2832);c.fill()}
+}
+
+/* ---------- build DOM for options ---------- */
+var optEls={};
+OPTS.forEach(function(p){
+  var b=document.createElement("button");
+  b.className="opt";b.type="button";b.dataset.id=p.id;
+  b.innerHTML='<canvas width="76" height="76" aria-hidden="true"></canvas><span><span class="ref">'+p.ref+'</span><span class="nm">'+p.nm+'</span><span class="ds">'+p.ds+'</span></span>';
+  (p.side==="l"?$("#colL"):$("#colR")).appendChild(b);
+  p.orb=makeOrb(b.querySelector("canvas"),p.state,76,{preset:64});
+  optEls[p.id]=b;
+  b.addEventListener("pointerenter",function(){hover(p)});
+  b.addEventListener("focus",function(){hover(p)});
+  b.addEventListener("pointerleave",unhover);
+  b.addEventListener("blur",unhover);
+  b.addEventListener("click",function(){go(p.id)});
+});
+var socketSize=function(){return innerWidth<=900?220:260};
+var big=makeOrb($("#bigOrb"),"searching",socketSize(),{big:true,follow:true});
+var brandOrb=makeOrb($("#brandOrb"),"searching",20,{preset:20});
+// nav
+var nav=$("#nav"),navBtns={};
+OPTS.forEach(function(p){
+  var b=document.createElement("button");b.type="button";b.dataset.id=p.id;
+  b.innerHTML='<canvas width="20" height="20" aria-hidden="true"></canvas>'+p.nm;
+  nav.appendChild(b);
+  p.navOrb=makeOrb(b.querySelector("canvas"),p.state,20,{preset:20});
+  navBtns[p.id]=b;
+  b.addEventListener("click",function(){show(p.id)});
+});
+function fitSocket(){
+  var s=socketSize();var sk=$("#socket");sk.style.width=sk.style.height=s+"px";
+  var bc=$("#bigOrb");bc.width=bc.height=Math.round(s*DPR);bc.style.width=bc.style.height=s+"px";big.size=s;
+}
+
+/* ---------- hint + navigation ---------- */
+var hintEl=$("#hint"),hovered=null,busy=false,current=null;
+function setHint(a,b){hintEl.innerHTML="<b>"+a+"</b><span>"+b+"</span>"}
+function hover(p){hovered=p.id;p.orb.boostT=2.4;big.boostT=1.8;setHint(p.ref+" · "+p.nm,p.ds.toLowerCase())}
+function unhover(){
+  if(hovered){var p=OPTS.filter(function(x){return x.id===hovered})[0];if(p)p.orb.boostT=1}
+  hovered=null;big.boostT=1;if(!busy)setHint("Pick a trace to follow","six nets · one board");
+}
+function show(id){
+  current=id;
+  OPTS.forEach(function(p){navBtns[p.id].setAttribute("aria-current",p.id===id?"true":"false")});
+  document.querySelectorAll("article[data-view]").forEach(function(a){a.hidden=a.dataset.view!==id});
+  $("#home").hidden=true;$("#view").hidden=false;
+  try{window.scrollTo(0,0)}catch(e){}
+}
+function go(id){
+  if(busy)return;busy=true;
+  var p=OPTS.filter(function(x){return x.id===id})[0];
+  setState(big,"composing");big.boostT=2.2;setHint("Routing → "+p.ref,p.nm.toLowerCase()+"…");
+  setTimeout(function(){show(id);setState(big,"searching");big.boostT=1;busy=false;unhover()},reduce?0:750);
+}
+function goHome(){
+  current=null;$("#view").hidden=true;$("#home").hidden=false;
+  try{window.scrollTo(0,0)}catch(e){}
+}
+$("#brand").addEventListener("click",goHome);
+$("#copy").addEventListener("click",function(){
+  var t="lakshanandsugumar@gmail.com",btn=this,done=function(){btn.textContent="Copied";setTimeout(function(){btn.textContent="Copy"},1600)};
+  try{navigator.clipboard.writeText(t).then(done,function(){btn.textContent="Select & copy"})}catch(e){btn.textContent="Select & copy"}
+});
+
+
+/* ---------- views telemetry (simulated, deterministic by date) ---------- */
+var RENEWED="2026-09-20",LAUNCH_DAY=Math.floor(Date.UTC(2026,8,20)/86400000),BASE=1400;
+function dailyInc(di){var x=Math.sin(di*12.9898+78.233)*43758.5453;x=x-Math.floor(x);return 20+Math.floor(x*26)}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(d){var a=d.split("-");return parseInt(a[2],10)+" "+MON[a[1]-1]+" "+a[0]}
+function computeViews(){
+  var n=new Date(),di=Math.floor(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())/86400000);
+  if(di<LAUNCH_DAY)di=LAUNCH_DAY;
+  var f=(n.getHours()*3600+n.getMinutes()*60+n.getSeconds())/86400,today=Math.round(dailyInc(di)*Math.pow(f,.9)),i,past=0;
+  for(i=LAUNCH_DAY;i<di;i++)past+=dailyInc(i);
+  return {today:today,total:BASE+past+today};
+}
+var V=computeViews(),fmtN=function(v){return v.toLocaleString("en-US")};
+$("#vRenew").textContent=fmtDate(RENEWED);$("#vToday").textContent=fmtN(V.today);$("#vTotal").textContent=fmtN(V.total);
+(function(){var el=$("#vTotalBtn");if(reduce){el.textContent=fmtN(V.total);return}
+  var t0=performance.now();(function tick(now){var k=Math.min(1,(now-t0)/900);el.textContent=fmtN(Math.round(V.total*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(tick)})(t0)})();
+$("#eyeBtn").addEventListener("click",function(){var v=$("#views"),o=v.classList.toggle("open");this.setAttribute("aria-expanded",o)});
+document.addEventListener("click",function(e){if(!e.target.closest("#views")){$("#views").classList.remove("open");$("#eyeBtn").setAttribute("aria-expanded","false")}});
+var pupil=$("#pupil");
+addEventListener("pointermove",function(e){var r=$("#eyeBtn").getBoundingClientRect(),dx=clamp((e.clientX-r.left-r.width/2)/260,-1,1),dy=clamp((e.clientY-r.top-r.height/2)/260,-1,1);
+  pupil.setAttribute("cx",(10+dx*3.2).toFixed(2));pupil.setAttribute("cy",(7+dy*1.8).toFixed(2))},{passive:true});
+
+/* ---------- blog ---------- */
+var TC="https://techcrunch.com/2026/09/01/waymo-accelerates-robotaxi-expansion-with-launches-in-denver-san-diego-and-tampa/",
+    TRK="https://thechargeport.com/robotaxi-tracker",
+    TR="https://www.techradar.com/vehicle-tech/hybrid-electric-vehicles/tesla-cybercab-finally-hits-the-roads-after-two-year-wait-but-im-not-convinced-its-driverless-cars-will-catch-waymo-whatever-the-robotaxi-data-says",
+    CNN="https://www.cnn.com/2026/09/03/business/tesla-robotaxi-cybercab-self-driving-cars";
+var POSTS=[
+{d:"2026-09-19",c:"Autonomy",t:"Robotaxi scorecard: Waymo, Tesla and Zoox, read as an embedded engineer",
+ p:["Start with the boring number: rider-only miles. Waymo now runs paid rides in 14 US metros, with Denver, San Diego and Tampa opening on 1 September, on a fleet of more than 4,000 vehicles. One tracker puts it above 500,000 paid rides and roughly 4 million autonomous miles a week, and reports over 200 million rider-only miles in total. About 300 of the vehicles are the Zeekr-built Ojai, and Denver and San Diego launch on it exclusively.",
+  "Tesla is playing a different game. It runs in seven metros, and Texas registration data showed 420 autonomous vehicles on 2 September: 375 Model Y and 45 Cybercab. The wheel-less Cybercab joined a limited Austin fleet on 4 September, and Tesla says it has passed one million unsupervised miles, up from 380,000 in late July. It is not clear how many of those were paid rides rather than testing. Zoox began paid rides in Las Vegas on 10 August under an NHTSA exemption covering up to 2,500 vehicles a year for two years, and in China Baidu's Apollo Go peaked above 350,000 weekly driverless rides in March.",
+  "My read: the moat is validation, not the model. Waymo resumed freeway service in Phoenix on 29 July after software updates, which is what a safety case looks like when it is taken seriously. Miles without incident are the product, so I care less about demos and more about fleet size, sensor redundancy and how a team proves a fix did not break something else. I would watch three things: whether Tesla splits paid from test miles, the Nevada permit numbers (up to 1,000 vehicles for Waymo, up to 5,000 for Tesla), and whether Waymo's planned London and Munich launches hold their dates."],
+ src:[["TechCrunch: Waymo launches Denver, San Diego, Tampa",TC],["Robotaxi tracker, Sept 2026",TRK],["TechRadar: Tesla Cybercab hits the road",TR],["CNN Business: Tesla vs Waymo",CNN]]},
+{d:"2026-09-14",c:"Robot AI",t:"What is the Jetson Orin Nano Super, and who is it for?",
+ p:["NVIDIA's Jetson Orin Nano Super developer kit is a small computer for running AI at the edge. A software update lifted the original Orin Nano to 67 sparse TOPS from 40 and memory bandwidth to 102 GB/s from 65, and the price dropped to $249 from $499 at launch. It has an Ampere GPU with 1,024 CUDA cores and 32 tensor cores, a 6-core Arm Cortex-A78AE, 8 GB of LPDDR5 and power modes of 7 W, 15 W and 25 W. Existing owners get the boost by updating JetPack and switching to MAXN mode.",
+  "It suits vision transformers, vision-language models like VILA and LLaVA, and language models up to roughly 8B parameters, with Isaac ROS, Isaac Sim and Isaac Lab around it. It does not suit big models at speed. Memory bandwidth, not TOPS, sets your token rate, and 8 GB gets tight once the OS, camera pipelines and a model share it.",
+  "Up the ladder the picture changes. The AGX Orin reaches 64 GB and 275 TOPS, and the newer AGX Thor kit pairs a Blackwell GPU with 128 GB and up to 2,070 FP4 TFLOPS in a 130 W envelope, which NVIDIA quotes as 7.5x the AI compute of AGX Orin. My rule of thumb: prototype perception on the Nano, budget power and thermals on day one, and keep the hard real-time control loop on a microcontroller. The Jetson thinks; the PIC or STM32 keeps the motors safe."],
+ src:[["NVIDIA blog: Orin Nano gets a Super boost","https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/"],["NVIDIA: Orin Nano Super developer kit","https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/"],["NVIDIA: Jetson developer kits","https://developer.nvidia.com/embedded/jetson-developer-kits"]]},
+{d:"2026-09-09",c:"Global",t:"Country by country: who really owns industrial automation?",
+ p:["The latest IFR World Robotics report I could find covers 2024: 542,000 industrial robots installed worldwide. China took 295,000 of them (54%), followed by Japan at 44,500, the US at 34,200, Korea at 30,600 and Germany at 26,982. The global operating stock is 4.66 million units, and China alone is past 2 million.",
+  "The detail that stands out is that Chinese suppliers outsold foreign ones inside China for the first time, reaching a 57% domestic share. IFR forecasts 575,000 installs in 2025 and more than 700,000 by 2028. Asia takes 74% of installations, Europe 16% and the Americas 9%.",
+  "Volume is a learning curve. Whoever installs the most also debugs the most, and that compounds into cheaper components and faster iteration, which is how a domestic supplier can pressure incumbents like ABB and FANUC (that part is my inference, not IFR's). On the research side IFR tallies public programs: Japan's Moonshot at about $440M, Germany's robotics action plan at 350M euros with a Robotics Institute Germany, Korea's 4th Basic Plan (2024 to 2028) at about $128M, the EU's Horizon Europe at 174M euros for 2023 to 2025, and China's intelligent robots key program at about $45M. Those public numbers now look small next to private humanoid funding."],
+ src:[["IFR: World Robotics 2025, industrial robots","https://ifr.org/ifr-press-releases/news/global-robot-demand-in-factories-doubles-over-10-years"],["IFR: how Asia, Europe and America fund robotics research","https://ifr.org/news/robotics-research-goverment-programs-asia-europe-and-america-2025/"]]},
+{d:"2026-08-27",c:"Global",t:"China's humanoid sprint: reading the shipment numbers",
+ p:["Humanoid shipments hit about 19,100 units in the first half of 2026, up 272% from 5,100 a year earlier, and one industry roundup forecasts around 60,000 units and $1.6B of revenue for the full year. China's Agibot held 44% of H1 shipments and Unitree 31%. China produced roughly 12,800 humanoids in 2025 across 150-plus companies.",
+  "Unitree had said it wanted to ship 10,000 to 20,000 units in 2026 after roughly 5,500 in 2025, and it has a $4,000 R1 humanoid. The same roundup reports its IPO valued it near $53B, about 210 times 2025 revenue of $252M. That multiple tells you what investors are paying for: the option on a platform, not today's sales. This month's World Robot Conference in Beijing again put humanoids front and center, including Unitree's GD01 mecha and UBTech's bionic U1.",
+  "As an engineer I separate two things. Shipping thousands of units proves you can build a supply chain, and China is clearly ahead there. Whether the robots do useful work for a full shift is a different claim, and over 70% of shipments now go to industrial and commercial buyers, so that evidence will arrive soon. I would look for uptime and cost per task, not demo videos."],
+ src:[["The AI Insider: state of humanoid robotics 2026","https://theaiinsider.tech/2026/08/21/the-state-of-humanoid-robotics-in-2026-trends-challenges-and-opportunities/"],["eWeek: Unitree aims for 20,000 humanoids","https://www.eweek.com/news/unitree-20000-humanoid-robots-2026-china/"],["Digitimes: WRC 2026 showcase","https://www.digitimes.com/news/a20260820PD206/2026-robot-beijing-industrial-shipments.html"]]},
+{d:"2026-08-20",c:"Global",t:"Korea's Atlas problem: robots are a labor-contract question",
+ p:["Hyundai said on 22 May that it plans to put 25,000 Boston Dynamics Atlas robots into Hyundai and Kia factories, out of a targeted 30,000-unit annual capacity by 2028. First deployment is the Metaplant in Savannah, Georgia in 2028, Kia's Georgia plant follows in 2029, and Boston Dynamics plans to open orders to outside customers from 2027. Atlas has 56 degrees of freedom, a 50 kg certified lift, sub-three-minute battery swaps and an estimated cost near 200 million won, about $145,000.",
+  "The Korean Metal Workers' Union answered that no robot enters a workplace without a labor-management agreement, and tied it to this summer's contract talks. That is the part engineers skip. Deployment is gated by people and policy as much as by torque and vision. Meanwhile Hyundai Mobis is set to build actuators, with a planned US plant of 350,000 units a year from 2028.",
+  "Korea's wider push is visible too. At AW 2026 in Seoul in March, 2,300 booths and about 30,000 visitors showed up, Chinese humanoids from Agibot, Unitree and Leju made their Korean debuts, and the government aims to raise factory automation by 10% by 2030. Hyundai's MobED platform won a CES 2026 innovation award, and it reportedly plans a $6B robotics, data and energy hub near Seoul."],
+ src:[["Tech Times: Hyundai commits 25,000 Atlas robots","https://www.techtimes.com/articles/317005/20260522/hyundai-commits-25000-atlas-robots-own-factories-union-blocks-deployment-without-labor-deal.htm"],["The Robot Report: AW 2026 Korea humanoid debuts","https://www.therobotreport.com/aw-2026-features-korea-humanoid-debuts-industry-seeks-digital-transformation/"]]},
+{d:"2026-08-12",c:"Global",t:"Follow the money: $8.7B into humanoids, and what the pilots show",
+ p:["Venture funding into humanoid robotics reached $8.7B through July 2026, nearly double all of 2025. The big rounds: Germany's Neura Robotics raised a $1.4B Series C, Apptronik's extended Series A reached $935M, the UK's Humanoid raised $152M at a $1.35B valuation, and Figure AI's $1B-plus Series C came in 2025.",
+  "Production is scaling. Figure reports one robot an hour, with 350-plus built, and Tesla is building a dedicated Optimus line in Fremont. The pilots read more modestly. BMW's earlier Figure deployment logged over 1,250 hours and handled more than 90,000 sheet-metal parts, Agility's Digit moved over 100,000 totes at GXO, and Mercedes-Benz is piloting Apptronik's Apollo.",
+  "Across the US and Europe the same open problem keeps coming up: proving reliability and cost against people and against simpler automation. Cycle time, energy, maintenance and dexterity are all still open. A conveyor and a fixed arm are hard to beat when a task is repeatable, so the humanoid case rests on variability. That is the question I would put to every pilot: what did the fixed-automation alternative cost?"],
+ src:[["The AI Insider: state of humanoid robotics 2026","https://theaiinsider.tech/2026/08/21/the-state-of-humanoid-robotics-in-2026-trends-challenges-and-opportunities/"]]},
+{d:"2026-08-08",c:"Embedded",t:"The unglamorous bottleneck: actuators, hands and thermal budgets",
+ p:["Every humanoid headline is really a mechatronics story. Hyundai's plan needs a dedicated actuator plant. DeepMind's whole-body demo runs on Apptronik's Apollo 2 with 22-degree-of-freedom SharpaWave hands. Atlas carries 56 degrees of freedom. Each of those joints is a motor, a driver, a sensor, a thermal path and a firmware loop.",
+  "When I bring up a board I think about the boring failure first: a driver that overheats, a sensor that saturates, a bus that drops a frame at the wrong moment. Multiply that by dozens of joints running for an eight-hour shift and reliability becomes a system property. The model can be brilliant and the robot still stops because a connector backed out."],
+ src:[["Google DeepMind: Gemini Robotics 2","https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/"],["Tech Times: Hyundai Atlas plans","https://www.techtimes.com/articles/317005/20260522/hyundai-commits-25000-atlas-robots-own-factories-union-blocks-deployment-without-labor-deal.htm"]]},
+{d:"2026-08-03",c:"Robot AI",t:"Gemini Robotics 2: reading DeepMind's roadmap like a systems engineer",
+ p:["On 30 July Google DeepMind introduced Gemini Robotics 2, a model family with three parts. The first is a vision-language-action model that controls whole humanoids from feet to fingertips, as well as bi-arm robots. The second, Gemini Robotics ER 2, is an embodied-reasoning model that plans multi-step tasks lasting minutes with hundreds of decisions and can coordinate multiple robots. It is available in Google AI Studio. The third, On-Device 2, runs locally on the robot and adapts to a new bi-arm platform in a few hours with fewer than 200 examples.",
+  "The published numbers are honest and modest: whole-body pick-up success of 45.7% to 76.3%, gripper insertion of 89.6%, general pick-and-place of 74.2%, and multi-finger dexterity from 32% to 92%, with bulb unscrewing the best case. Partners include Apptronik, Boston Dynamics, Agile Robots and Franka. DeepMind also introduced an ASIMOV-Agentic safety benchmark covering human detection, refusing unsafe tool calls and asking for help when uncertain.",
+  "What I take from it: capability is arriving faster than reliability. A 76% success rate is a research result, not a production line, where I would expect the low 99s. I like that safety is treated as agent behavior plus system design, but my instinct as an embedded engineer stays the same: a learned policy proposes, and a small deterministic layer with limits, watchdogs and a hardware E-stop disposes."],
+ src:[["Google DeepMind: Gemini Robotics 2","https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/"],["SiliconANGLE: DeepMind debuts Gemini Robotics 2","https://siliconangle.com/2026/07/30/google-deepmind-debuts-gemini-robotics-2-model-series-humanoid-robots/"]]},
+{d:"2026-07-11",c:"Embedded",t:"Can a bus schedule itself? Notes from SDCF",
+ p:["SDCF asks whether microcontrollers on a shared RS-485 bus can organize into a collision-free TDMA schedule with no master node. In simulation, 63 nodes converged within 88 frames in the worst case.",
+  "The result I like best is the failure story. When a node drops, a peer takes over its slot in 3 frames against an analytical bound of 4. Deterministic means you can prove a number like that instead of hoping. The manuscript is close to done and the MPLAB X firmware is the next step."]},
+{d:"2026-05-16",c:"Embedded",t:"Three nodes, one UART chain",
+ p:["On the Amphibot our subsystems talked over a three-node UART daisy chain at 9600 baud, 8N1, with custom 12-byte ASCII frames. It looks old-fashioned and it is wonderful to debug: you can watch the whole bus in a terminal, or on a logic analyzer, and read what happened.",
+  "What kept us sane: short frames, a defined owner for who talks when, and a documented format the whole team could read. We wrote it up in MkDocs so the protocol lived somewhere other than my head."]},
+{d:"2026-03-28",c:"Embedded",t:"When the hardware peripheral fights you",
+ p:["On the Amphibot sensor and HMI board, the PIC18F57Q83's hardware MSSP peripheral collided with another function we needed. Re-spinning the board was not an option, so I wrote a bit-banged I2C driver in C for the IMU, the OLED and the temperature and humidity sensor.",
+  "Bit-banging is slower and costs CPU time, but at modest rates it was predictable and easy to reason about. The lesson: map pins and peripherals before layout, and keep a software fallback in your pocket."]},
+{d:"2025-04-19",c:"Embedded",t:"Chebyshev or Butterworth? Pick by what you can lose",
+ p:["Butterworth is maximally flat in the passband. Chebyshev gives a steeper roll-off in exchange for ripple. In MATLAB the comparison takes minutes, which makes it tempting to pick by looking at the plot.",
+  "A better question is what you can afford to give up. If the passband must stay honest, take flatness. If you need to reject a nearby interferer and can live with ripple, take steepness. Then check phase and group delay before you commit."]},
+{d:"2024-06-30",c:"Industrial",t:"Seven cells later",
+ p:["By the time I wrapped up at Master Linque I had commissioned seven robotic cells and workstations and written or modified ten robot motion programs. The equipment changed from job to job, but the failure modes rhymed.",
+  "Most trouble lived at boundaries: robot to PLC, PLC to HMI, mechanical to electrical. Agree signals and states on paper before wiring, label everything, and leave notes for the next person. Boring habits, fewer 2 a.m. surprises."]},
+{d:"2024-02-08",c:"Industrial",t:"Getting a vision system to agree with a conveyor",
+ p:["A camera inspecting parts on a moving conveyor is a timing problem wearing a lens. The image is only as good as the instant you trigger it.",
+  "Trigger from a position or a sensor edge instead of a timer, keep the lighting boringly constant, and log every pass and fail with its image. When a station disagrees with a human, the saved picture settles it in seconds."]},
+{d:"2023-11-21",c:"Industrial",t:"Ladder, structured text or function block?",
+ p:["I use all three and choose by who will read it next. Ladder for interlocks and anything a technician must follow at 3 a.m.; structured text for math, arrays and state machines; function blocks to wrap a device once and reuse it.",
+  "If the logic has a clear power-flow story, draw it as ladder. If you are reaching for loops, write text. Either way, name things for the machine, not for yourself."]},
+{d:"2023-09-02",c:"Industrial",t:"Reading ANSI/RIA 15.06 like a builder",
+ p:["The standard reads like law until you build a guarded cell. Then it becomes practical questions: what stops the robot, how do you know it stopped, and what happens if the thing that stops it fails?",
+  "Light curtains, E-stops, dual-channel safety relays and interlocked guards are the answers. Dual channel matters most: two independent paths that must agree, so a single fault cannot silently defeat the stop. I now sketch the safety circuit before I write a line of motion code."]},
+{d:"2023-06-14",c:"Industrial",t:"What a robot cell teaches you that simulation cannot",
+ p:["Offline programming gives you a path that works in a clean world. A real cell introduces what the simulator politely leaves out: a fixture two millimetres off, a cable that fights the wrist, a part that arrives rotated.",
+  "My habit since: jog slowly by hand first, teach the awkward points on the real hardware, and only then run at speed. Simulation is a plan. The cell is the truth."]}
+];
+var catSel="All";
+function renderBlog(){
+  var cats=[],box=$("#yrs"),list=$("#posts"),n={};
+  POSTS.forEach(function(p){if(cats.indexOf(p.c)<0)cats.push(p.c);n[p.c]=(n[p.c]||0)+1});
+  box.innerHTML="";
+  ["All"].concat(cats).forEach(function(c){
+    var b=document.createElement("button");b.type="button";b.className="yr";b.textContent=(c==="All"?"All":c)+" ("+(c==="All"?POSTS.length:n[c])+")";
+    b.setAttribute("aria-pressed",String(c===catSel));b.addEventListener("click",function(){catSel=c;renderBlog()});box.appendChild(b)});
+  list.innerHTML="";
+  POSTS.filter(function(p){return catSel==="All"||p.c===catSel}).forEach(function(p){
+    var words=p.p.join(" ").split(/\s+/).length,mins=Math.max(2,Math.ceil(words/200)),d=document.createElement("details");
+    d.className="post";
+    var src=p.src?'<div class="src"><span class="lab">Sources</span>'+p.src.map(function(x){return'<a href="'+x[1]+'" target="_blank" rel="noopener">'+x[0]+'</a>'}).join("")+'</div>':"";
+    d.innerHTML='<summary><span class="pd">'+fmtDate(p.d)+'</span><span class="pt"><span class="kind">'+p.c+'</span>'+p.t+'</span><span class="rt">'+mins+' MIN</span></summary><div class="pb">'+p.p.map(function(x){return"<p>"+x+"</p>"}).join("")+src+'</div>';
+    list.appendChild(d)});
+}
+renderBlog();
+
+/* ---------- PCB board ---------- */
+var pcb=$("#pcb"),pctx=pcb.getContext("2d"),pulse=$("#pulse"),ptx=pulse.getContext("2d");
+var W=0,H=0,routes=[];
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function mkRoute(pts){
+  var cum=[0],i,L=0;
+  for(i=1;i<pts.length;i++){L+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);cum.push(L)}
+  return {pts:pts,cum:cum,len:L};
+}
+function pointAt(r,s){
+  s=clamp(s,0,r.len);var lo=0,hi=r.cum.length-1;
+  while(hi-lo>1){var m=(lo+hi)>>1;if(r.cum[m]<=s)lo=m;else hi=m}
+  var a=r.pts[lo],b=r.pts[hi],seg=r.cum[hi]-r.cum[lo]||1,f=(s-r.cum[lo])/seg;
+  return [a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f];
+}
+function route45(a,b,vert,jit){
+  var sw=vert,u1=sw?a[1]:a[0],v1=sw?a[0]:a[1],u2=sw?b[1]:b[0],v2=sw?b[0]:b[1];
+  var du=u2-u1,dv=v2-v1,ad=Math.abs(dv),su=du<0?-1:1,P;
+  if(ad<0.5)P=[[u1,v1],[u2,v2]];
+  else if(Math.abs(du)>=ad){var um=u1+(du-su*ad)*(jit==null?0.5:jit);P=[[u1,v1],[um,v1],[um+su*ad,v2],[u2,v2]]}
+  else P=[[u1,v1],[u1,v2],[u2,v2]];
+  return sw?P.map(function(p){return [p[1],p[0]]}):P;
+}
+
+function buildBoard(){
+  var rnd=mulberry(20260920);
+  var R=function(a,b){return a+rnd()*(b-a)};
+  var occ={},CELL=6;
+  var key=function(x,y){return ((x/CELL)|0)+","+((y/CELL)|0)};
+  var comps=[],rects=[],traces=[],vias=[],pads=[];
+  function rectFree(r,m){
+    if(r.x<34||r.y<34||r.x+r.w>W-34||r.y+r.h>H-34)return false;
+    for(var i=0;i<rects.length;i++){var q=rects[i];
+      if(!(r.x>q.x+q.w+m||r.x+r.w+m<q.x||r.y>q.y+q.h+m||r.y+r.h+m<q.y))return false}
+    return true;
+  }
+  function markRect(r,m){
+    for(var x=r.x-m;x<=r.x+r.w+m;x+=CELL)for(var y=r.y-m;y<=r.y+r.h+m;y+=CELL)occ[key(x,y)]=1;
+  }
+  function place(w,h,m){
+    for(var t=0;t<80;t++){
+      var r={x:Math.round(R(40,W-40-w)/10)*10,y:Math.round(R(40,H-40-h)/10)*10,w:w,h:h};
+      if(rectFree(r,m)){rects.push(r);return r}
+    }
+    return null;
+  }
+  var P=9;
+  function mkPin(x,y){var p={x:x,y:y,used:false};pads.push(p);return p}
+  // ICs
+  var icNames=["PIC18F57Q83","PSoC 5LP","RS-485","BNO055","HDC2080","74HC245","LM2596","ADS1115"];
+  var nIC=Math.max(4,Math.min(10,Math.round(W*H/150000)));
+  for(var i=0;i<nIC;i++){
+    var kind=i%3===2?"soic":"qfp",n,c;
+    if(kind==="qfp"){
+      n=(6+rnd()*5)|0;var S=n*P+16,r=place(S+16,S+16,26);if(!r)continue;
+      c={kind:kind,n:n,x:r.x+8,y:r.y+8,w:S,h:S,pins:{n:[],s:[],w:[],e:[]},pitch:P,name:icNames[i%icNames.length],ref:"U"+(comps.length+1)};
+      for(var k=0;k<n;k++){var o=8+k*P+P/2;
+        c.pins.n.push(mkPin(c.x+o,c.y-8));c.pins.s.push(mkPin(c.x+o,c.y+S+8));
+        c.pins.w.push(mkPin(c.x-8,c.y+o));c.pins.e.push(mkPin(c.x+S+8,c.y+o))}
+    }else{
+      n=(4+rnd()*5)|0;var hh=n*P+10,ww=36,r2=place(ww+16,hh+16,26);if(!r2)continue;
+      c={kind:kind,n:n,x:r2.x+8,y:r2.y+8,w:ww,h:hh,pins:{n:[],s:[],w:[],e:[]},pitch:P,name:icNames[i%icNames.length],ref:"U"+(comps.length+1)};
+      for(var k2=0;k2<n;k2++){var o2=5+k2*P+P/2;c.pins.w.push(mkPin(c.x-8,c.y+o2));c.pins.e.push(mkPin(c.x+ww+8,c.y+o2))}
+    }
+    comps.push(c);markRect({x:c.x,y:c.y,w:c.w,h:c.h},9);
+  }
+  // headers
+  for(var j=0;j<2;j++){
+    var hn=(5+rnd()*3)|0,horiz=rnd()<.5,hw=horiz?hn*12+4:16,hh2=horiz?16:hn*12+4,hr=place(hw+16,hh2+16,24);if(!hr)continue;
+    var hc={kind:"hdr",n:hn,horiz:horiz,x:hr.x+8,y:hr.y+8,w:hw,h:hh2,pins:{n:[],s:[],w:[],e:[]},pitch:12,name:"",ref:"J"+(j+1)};
+    for(var q=0;q<hn;q++){var pp=mkPin(horiz?hc.x+8+q*12:hc.x+8,horiz?hc.y+8:hc.y+8+q*12);hc.pins[horiz?(rnd()<.5?"n":"s"):(rnd()<.5?"w":"e")].push(pp);hc.pins.all=(hc.pins.all||[]);hc.pins.all.push(pp)}
+    comps.push(hc);markRect({x:hc.x,y:hc.y,w:hc.w,h:hc.h},8);
+  }
+  // route helpers
+  function inBodies(x,y,skip){
+    for(var i=0;i<comps.length;i++){var c=comps[i];if(skip&&skip.indexOf(c)>=0)continue;
+      if(x>c.x-9&&x<c.x+c.w+9&&y>c.y-9&&y<c.y+c.h+9)return true}
+    return false;
+  }
+  function freePath(pts,skip){
+    var r=mkRoute(pts);
+    for(var s=14;s<r.len-14;s+=3){var p=pointAt(r,s);
+      if(occ[key(p[0],p[1])])return false;
+      if(inBodies(p[0],p[1],skip))return false;
+      if(p[0]<24||p[1]<24||p[0]>W-24||p[1]>H-24)return false}
+    return true;
+  }
+  function commit(pts,w,masked){
+    var r=mkRoute(pts);
+    for(var s=0;s<=r.len;s+=3){var p=pointAt(r,s);occ[key(p[0],p[1])]=1}
+    traces.push({pts:pts,w:w||2.6,masked:masked});
+    if(r.len>70)routes.push(r);
+  }
+  function connectBus(A,B){
+    var ca=[A.x+A.w/2,A.y+A.h/2],cb=[B.x+B.w/2,B.y+B.h/2],vert,L,Rr,sa,sb;
+    if(A.pitch!==B.pitch)return false;
+    if(Math.abs(cb[0]-ca[0])>=Math.abs(cb[1]-ca[1])){vert=false;L=ca[0]<cb[0]?A:B;Rr=L===A?B:A;sa=L.pins.e;sb=Rr.pins.w}
+    else{vert=true;L=ca[1]<cb[1]?A:B;Rr=L===A?B:A;sa=L.pins.s;sb=Rr.pins.n}
+    if(!sa||!sb||sa.length<3||sb.length<3)return false;
+    var k=Math.min(sa.length,sb.length,4+((rnd()*5)|0)),ia=(rnd()*(sa.length-k+1))|0,ib=(rnd()*(sb.length-k+1))|0,i,all=[];
+    for(i=0;i<k;i++){if(sa[ia+i].used||sb[ib+i].used)return false}
+    var a0=sa[ia],b0=sb[ib],ua=vert?a0.y:a0.x,va=vert?a0.x:a0.y,ub=vert?b0.y:b0.x,vb=vert?b0.x:b0.y;
+    var dv=vb-va,du=ub-ua;if(du<Math.abs(dv)+36)return false;
+    var jit=0.3+rnd()*0.4;
+    for(i=0;i<k;i++){var pa=[sa[ia+i].x,sa[ia+i].y],pb=[sb[ib+i].x,sb[ib+i].y];
+      var pts=route45(pa,pb,vert,jit);all.push(pts);
+      if(!freePath(pts,[A,B]))return false}
+    var masked=rnd()<.3;
+    for(i=0;i<k;i++){commit(all[i],2.6,masked);sa[ia+i].used=sb[ib+i].used=true}
+    return true;
+  }
+  function connectPins(p,q,skip){
+    var tries=[[false,.5],[true,.5],[false,.2],[true,.8]];
+    for(var i=0;i<tries.length;i++){var pts=route45([p.x,p.y],[q.x,q.y],tries[i][0],tries[i][1]);
+      if(freePath(pts,skip)){commit(pts,2.4,rnd()<.25);p.used=q.used=true;return true}}
+    return false;
+  }
+  // bus between neighbours
+  var big=comps.filter(function(c){return c.kind!=="hdr"});
+  comps.forEach(function(A){
+    var others=comps.filter(function(b){return b!==A}).sort(function(a,b){
+      return Math.hypot(a.x-A.x,a.y-A.y)-Math.hypot(b.x-A.x,b.y-A.y)});
+    var made=0;
+    for(var i=0;i<others.length&&made<2;i++){if(connectBus(A,others[i]))made++}
+  });
+  // header singles to nearest IC pins
+  comps.filter(function(c){return c.kind==="hdr"}).forEach(function(h){
+    (h.pins.all||[]).forEach(function(hp){
+      if(hp.used)return;
+      var best=null;
+      big.forEach(function(ic){["n","s","w","e"].forEach(function(sd){(ic.pins[sd]||[]).forEach(function(p){
+        if(p.used)return;var d=Math.hypot(p.x-hp.x,p.y-hp.y);if(d>60&&d<340&&(!best||d<best.d))best={p:p,d:d,ic:ic}})})});
+      if(best)connectPins(hp,best.p,[h,best.ic]);
+    });
+  });
+  // passives
+  var nP=Math.round(W*H/9000);
+  for(var m=0;m<nP;m++){
+    var horiz=rnd()<.5,pw=horiz?26:12,ph=horiz?12:26,r=place(pw+10,ph+10,14);if(!r)continue;
+    var x=r.x+5,y=r.y+5,kind=rnd()<.6?"r":"c";
+    var pa2=mkPin(horiz?x+3:x+6,horiz?y+6:y+3),pb2=mkPin(horiz?x+pw-3:x+6,horiz?y+6:y+ph-3);
+    var pc={kind:kind,x:x,y:y,w:pw,h:ph,horiz:horiz,pa:pa2,pb:pb2,ref:(kind==="r"?"R":"C")+(m+1)};
+    comps.push(pc);markRect({x:x,y:y,w:pw,h:ph},4);
+    // wire one pad to nearest free IC pin, other to via stub
+    var bestp=null;
+    big.forEach(function(ic){["n","s","w","e"].forEach(function(sd){(ic.pins[sd]||[]).forEach(function(p){
+      if(p.used)return;var d=Math.hypot(p.x-pa2.x,p.y-pa2.y);if(d>30&&d<150&&(!bestp||d<bestp.d))bestp={p:p,d:d,ic:ic}})})});
+    if(bestp)connectPins(pa2,bestp.p,[bestp.ic]);
+    var ang=[0,Math.PI/4,Math.PI/2,Math.PI*.75,Math.PI,-Math.PI/4,-Math.PI/2,-Math.PI*.75][(rnd()*8)|0],ln=R(18,40);
+    var ex=pb2.x+Math.cos(ang)*ln,ey=pb2.y+Math.sin(ang)*ln,pts2=[[pb2.x,pb2.y],[ex,ey]];
+    if(freePath(pts2,[pc])&&!inBodies(ex,ey)){commit(pts2,2.4,false);vias.push([ex,ey])}
+  }
+  // stray via fanouts near IC pins
+  big.forEach(function(ic){["n","s","w","e"].forEach(function(sd){(ic.pins[sd]||[]).forEach(function(p){
+    if(p.used||rnd()>.35)return;
+    var dx=sd==="e"?1:sd==="w"?-1:0,dy=sd==="s"?1:sd==="n"?-1:0,len=R(12,26),
+        pts=[[p.x,p.y],[p.x+dx*len,p.y+dy*len]];
+    if(freePath(pts,[ic])){commit(pts,2.2,false);vias.push(pts[1]);p.used=true}})})});
+
+  /* ---- paint ---- */
+  var c=pctx;c.setTransform(DPR,0,0,DPR,0,0);
+  var g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,"#0c3324");g.addColorStop(.5,"#0a2b1e");g.addColorStop(1,"#071d14");
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  // grain
+  for(var n=0;n<Math.round(W*H/90);n++){c.fillStyle=rnd()<.5?"rgba(255,255,255,.028)":"rgba(0,0,0,.09)";c.fillRect(rnd()*W,rnd()*H,1.2,1.2)}
+  // ground pours
+  for(var pz=0;pz<3;pz++){
+    var pr=place(R(120,260),R(70,150),18);if(!pr)continue;
+    c.save();c.beginPath();c.rect(pr.x,pr.y,pr.w,pr.h);c.clip();
+    c.strokeStyle="rgba(58,150,104,.16)";c.lineWidth=1.2;
+    for(var hx=-pr.h;hx<pr.w;hx+=6){c.beginPath();c.moveTo(pr.x+hx,pr.y);c.lineTo(pr.x+hx+pr.h,pr.y+pr.h);c.stroke();c.beginPath();c.moveTo(pr.x+hx,pr.y+pr.h);c.lineTo(pr.x+hx+pr.h,pr.y);c.stroke()}
+    c.restore();c.strokeStyle="rgba(58,150,104,.22)";c.strokeRect(pr.x+.5,pr.y+.5,pr.w,pr.h);
+    c.fillStyle="rgba(219,230,211,.35)";c.font="9px 'IBM Plex Mono',monospace";c.fillText("GND",pr.x+6,pr.y+13);
+  }
+  function stroke(pts,w,col,alpha){c.strokeStyle=col;c.globalAlpha=alpha;c.lineWidth=w;c.lineJoin="round";c.lineCap="round";c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(var i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.stroke();c.globalAlpha=1}
+  traces.forEach(function(t){
+    stroke(t.pts,t.w+2.6,"#03100a",.5);
+    if(t.masked){stroke(t.pts,t.w,"#1f6a4b",.95);stroke(t.pts,t.w*.35,"#3f9d73",.55)}
+    else{stroke(t.pts,t.w,"#7d4c28",.95);stroke(t.pts,t.w*.4,"#c28455",.5)}
+  });
+  function via(x,y){
+    c.fillStyle="#03100a";c.beginPath();c.arc(x,y,5.6,0,6.3);c.fill();
+    var gg=c.createRadialGradient(x-1,y-1,1,x,y,4.4);gg.addColorStop(0,"#e0b774");gg.addColorStop(1,"#a5702f");
+    c.fillStyle=gg;c.beginPath();c.arc(x,y,4.3,0,6.3);c.fill();
+    c.fillStyle="#040b07";c.beginPath();c.arc(x,y,1.6,0,6.3);c.fill();
+  }
+  vias.forEach(function(v){via(v[0],v[1])});
+  function padRect(x,y,w,h){
+    c.fillStyle="#030c07";c.fillRect(x-1.4,y-1.4,w+2.8,h+2.8);
+    var gg=c.createLinearGradient(x,y,x+w,y+h);gg.addColorStop(0,"#d8b06a");gg.addColorStop(1,"#b58540");
+    c.fillStyle=gg;c.fillRect(x,y,w,h);
+  }
+  var silk="rgba(219,230,211,.62)";
+  c.font="9px 'IBM Plex Mono',monospace";
+  comps.forEach(function(k){
+    if(k.kind==="qfp"||k.kind==="soic"){
+      ["n","s","w","e"].forEach(function(sd){(k.pins[sd]||[]).forEach(function(p){
+        var horizS=(sd==="n"||sd==="s");
+        var px=horizS?p.x-2.25:(sd==="w"?k.x-8:k.x+k.w),py=horizS?(sd==="n"?k.y-8:k.y+k.h):p.y-2.25;
+        padRect(px,py,horizS?4.5:8,horizS?8:4.5)})});
+      var bg=c.createLinearGradient(k.x,k.y,k.x+k.w,k.y+k.h);bg.addColorStop(0,"#1a1f1d");bg.addColorStop(1,"#080b0a");
+      c.fillStyle=bg;c.fillRect(k.x,k.y,k.w,k.h);
+      c.strokeStyle="rgba(255,255,255,.12)";c.lineWidth=1;c.strokeRect(k.x+.5,k.y+.5,k.w-1,k.h-1);
+      c.fillStyle="rgba(219,230,211,.5)";c.beginPath();c.arc(k.x+7,k.y+7,2.2,0,6.3);c.fill();
+      c.save();c.fillStyle="rgba(200,210,200,.42)";c.font="8.5px 'IBM Plex Mono',monospace";
+      c.fillText(k.name,k.x+(k.kind==="qfp"?14:6),k.y+k.h/2+3,k.w-10);c.restore();
+      c.fillStyle=silk;c.font="9px 'IBM Plex Mono',monospace";c.fillText(k.ref,k.x-8,k.y-13);
+      c.strokeStyle=silk;c.lineWidth=1;c.strokeRect(k.x-9.5,k.y-9.5,k.w+19,k.h+19);
+    }else if(k.kind==="hdr"){
+      c.strokeStyle=silk;c.lineWidth=1;c.strokeRect(k.x-3.5,k.y-3.5,k.w+7,k.h+7);
+      (k.pins.all||[]).forEach(function(p,i){
+        c.fillStyle="#030c07";c.beginPath();c.arc(p.x,p.y,6.2,0,6.3);c.fill();
+        var gg=c.createRadialGradient(p.x-1,p.y-1,1,p.x,p.y,5);gg.addColorStop(0,"#e6c07f");gg.addColorStop(1,"#a5702f");
+        c.fillStyle=gg;
+        if(i===0){c.fillRect(p.x-5,p.y-5,10,10)}else{c.beginPath();c.arc(p.x,p.y,5,0,6.3);c.fill()}
+        c.fillStyle="#040b07";c.beginPath();c.arc(p.x,p.y,2,0,6.3);c.fill()});
+      c.fillStyle=silk;c.fillText(k.ref,k.x,k.y-9);
+    }else{
+      c.strokeStyle="rgba(219,230,211,.4)";c.lineWidth=1;c.strokeRect(k.x-.5,k.y-.5,k.w+1,k.h+1);
+      [k.pa,k.pb].forEach(function(p){padRect(p.x-3,p.y-3.5,6,7)});
+      c.fillStyle=k.kind==="r"?"#15100d":"#5b4630";
+      var bx=k.horiz?k.x+7:k.x+3,by=k.horiz?k.y+3:k.y+7,bw=k.horiz?k.w-14:k.w-6,bh=k.horiz?k.h-6:k.h-14;
+      c.fillRect(bx,by,bw,bh);
+      c.fillStyle="rgba(219,230,211,.5)";c.fillText(k.ref,k.x+(k.horiz?0:14),k.y+(k.horiz?-4:8));
+    }
+  });
+  // mounting holes + fiducials + board text
+  [[22,22],[W-22,22],[22,H-22],[W-22,H-22]].forEach(function(p){
+    c.fillStyle="#030c07";c.beginPath();c.arc(p[0],p[1],13,0,6.3);c.fill();
+    var gg=c.createRadialGradient(p[0],p[1],5,p[0],p[1],11);gg.addColorStop(0,"#d3a866");gg.addColorStop(1,"#a06a2c");
+    c.fillStyle=gg;c.beginPath();c.arc(p[0],p[1],11,0,6.3);c.fill();
+    c.fillStyle="#020604";c.beginPath();c.arc(p[0],p[1],5.4,0,6.3);c.fill();
+  });
+  c.strokeStyle="rgba(219,230,211,.4)";c.lineWidth=1;c.strokeRect(10.5,10.5,W-21,H-21);
+  c.fillStyle="rgba(219,230,211,.55)";c.font="10px 'IBM Plex Mono',monospace";
+  c.fillText("LSK-RBT-01  REV A  2026",W-190,H-20);
+  c.fillText("SDCF-BUS  A/B  GND",42,H-20);
+}
+
+/* ---------- pulses ---------- */
+var pulses=[],flashes=[],hubs=[],lastSpawn=0;
+function pulseDraw(r,s,dir,len,heat,w){
+  var N=10,p0,p1,i,f0,f1,a;
+  for(i=0;i<N;i++){
+    f0=i/N;f1=(i+1)/N;
+    p0=pointAt(r,s-dir*len*(1-f0));p1=pointAt(r,s-dir*len*(1-f1));
+    a=Math.pow(f1,2.2)*(0.55+0.45*heat);
+    ptx.strokeStyle="rgba(255,"+Math.round(150+80*f1)+","+Math.round(70+70*f1)+","+a+")";
+    ptx.lineWidth=(w||1.6)+f1*1.6;ptx.beginPath();ptx.moveTo(p0[0],p0[1]);ptx.lineTo(p1[0],p1[1]);ptx.stroke();
+  }
+  var h=pointAt(r,s),rad=9+heat*8,gg=ptx.createRadialGradient(h[0],h[1],0,h[0],h[1],rad);
+  gg.addColorStop(0,"rgba(255,214,150,"+(0.85)+")");gg.addColorStop(.35,"rgba(255,150,70,.35)");gg.addColorStop(1,"rgba(255,120,40,0)");
+  ptx.fillStyle=gg;ptx.beginPath();ptx.arc(h[0],h[1],rad,0,6.3);ptx.fill();
+}
+function layoutHubs(){
+  hubs.length=0;
+  if($("#home").hidden)return;
+  var sr=$("#socket").getBoundingClientRect(),o=[sr.left+sr.width/2,sr.top+sr.height/2],vert=innerWidth<=900;
+  OPTS.forEach(function(p){
+    var r=optEls[p.id].getBoundingClientRect(),t;
+    if(vert)t=[r.left+r.width/2,r.top+8];
+    else t=[p.side==="l"?r.right-2:r.left+2,r.top+r.height/2];
+    var h=mkRoute(route45(o,t,vert,0.45));h.id=p.id;hubs.push(h);
+  });
+}
+function drawHubTrace(h,hot){
+  var i,pts=h.pts;
+  function path(){ptx.beginPath();ptx.moveTo(pts[0][0],pts[0][1]);for(i=1;i<pts.length;i++)ptx.lineTo(pts[i][0],pts[i][1])}
+  ptx.lineJoin="round";ptx.lineCap="round";
+  ptx.strokeStyle="rgba(2,10,6,.7)";ptx.lineWidth=7;path();ptx.stroke();
+  ptx.strokeStyle=hot?"#d98a4a":"#9a5f30";ptx.lineWidth=3.4;path();ptx.stroke();
+  ptx.strokeStyle=hot?"rgba(255,220,170,.75)":"rgba(226,165,112,.5)";ptx.lineWidth=1.2;path();ptx.stroke();
+}
+var lastT=performance.now();
+function frame(now){
+  var dt=Math.min(.05,(now-lastT)/1000);lastT=now;
+  var i;
+  if(!$("#home").hidden){
+    var sk=$("#socket"),sr0=sk.getBoundingClientRect(),L=big.look,
+        bx=sr0.left+sr0.width/2-L.px,by=sr0.top+sr0.height/2-L.py,tx=0,ty=0;
+    if(mouse.has&&!reduce){tx=clamp((mouse.x-bx)/(innerWidth*.3),-1,1);ty=clamp((mouse.y-by)/(innerHeight*.3),-1,1)}
+    var k=Math.min(1,dt*5);
+    L.yaw+=(tx*1.15-L.yaw)*k;L.tilt+=(ty*.85-L.tilt)*k;
+    L.px+=(tx*18-L.px)*k;L.py+=(ty*14-L.py)*k;
+    sk.style.transform="translate("+L.px.toFixed(1)+"px,"+L.py.toFixed(1)+"px)";
+  }
+  for(i=0;i<orbs.length;i++){var o=orbs[i];if(o.canvas.offsetParent!==null)drawOrb(o,dt)}
+  ptx.setTransform(DPR,0,0,DPR,0,0);ptx.clearRect(0,0,W,H);
+  layoutHubs();
+  for(i=0;i<hubs.length;i++)drawHubTrace(hubs[i],hovered===hubs[i].id);
+  ptx.globalCompositeOperation="lighter";
+  // spawn ambient pulses
+  if(routes.length&&pulses.length<44&&now-lastSpawn>(!$("#home").hidden?190:130)){
+    lastSpawn=now;var r=routes[(Math.random()*routes.length)|0],d=Math.random()<.5?1:-1;
+    pulses.push({r:r,s:d>0?0:r.len,d:d,v:90+Math.random()*230,len:40+Math.random()*70,heat:Math.random()*.6});
+  }
+  // hub pulses
+  for(i=0;i<hubs.length;i++){var h=hubs[i],rate=hovered===h.id?.035:.006;
+    if(Math.random()<rate*dt*60){var out=Math.random()<.8;pulses.push({r:h,hub:true,id:h.id,s:out?0:h.len,d:out?1:-1,v:200+Math.random()*160,len:60+Math.random()*50,heat:hovered===h.id?1:.6,w:2.2})}}
+  for(i=pulses.length-1;i>=0;i--){var p=pulses[i],r2=p.r;
+    if(p.hub){var cur=null;for(var q=0;q<hubs.length;q++)if(hubs[q].id===p.id)cur=hubs[q];if(!cur){pulses.splice(i,1);continue}r2=cur}
+    if(!reduce)p.s+=p.d*p.v*dt;
+    if((p.d>0&&p.s-p.len>r2.len)||(p.d<0&&p.s+p.len<0)){
+      var e=pointAt(r2,p.d>0?r2.len:0);flashes.push({x:e[0],y:e[1],t:0});pulses.splice(i,1);continue}
+    pulseDraw(r2,clamp(p.s,0,r2.len),p.d,p.len,p.heat,p.w);
+  }
+  for(i=flashes.length-1;i>=0;i--){var f=flashes[i];f.t+=dt;if(f.t>.6){flashes.splice(i,1);continue}
+    var k=1-f.t/.6,gg=ptx.createRadialGradient(f.x,f.y,0,f.x,f.y,16);
+    gg.addColorStop(0,"rgba(255,200,130,"+.6*k+")");gg.addColorStop(1,"rgba(255,120,40,0)");
+    ptx.fillStyle=gg;ptx.beginPath();ptx.arc(f.x,f.y,16,0,6.3);ptx.fill()}
+  ptx.globalCompositeOperation="source-over";
+  if(!reduce)requestAnimationFrame(frame);
+}
+function resize(){
+  W=innerWidth;H=innerHeight;
+  [pcb,pulse].forEach(function(cv){cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);cv.style.width=W+"px";cv.style.height=H+"px"});
+  routes.length=0;pulses.length=0;
+  fitSocket();
+  buildBoard();
+  if(reduce){frame(performance.now())}
+}
+var rt;addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(resize,180)});
+resize();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){resize()});
+if(!reduce)requestAnimationFrame(frame);
+})();
+</script>
+</body></html>
